@@ -1,10 +1,12 @@
+import pickle
 # type de block : (si le block n'est pas renseigné il sera remplacé par un ground)
 # 0 = ground
 # 1 = block solid
 # 2 = block breakable
 # 3 = power-up
 
-level = [29, 29, [[1,1],[28,28],[28,1],[1,28],[15,1],[28,15],[15,28],[1,15]],   #Taille de la map x, Taille de la map y, positions d'apparition de chaque joueur
+level = ["MapApprovedCertificate", 29, 29, [[1,1],[28,28],[28,1],[1,28],[15,1],[28,15],[15,28],[1,15]],   #Taille de la map x, Taille de la map y, positions d'apparition de chaque joueur
+#Contour de la map
 [1, 0, 0], #type de block, x, y
 [1, 1, 0],
 [1, 2, 0],
@@ -95,4 +97,41 @@ level = [29, 29, [[1,1],[28,28],[28,1],[1,28],[15,1],[28,15],[15,28],[1,15]],   
 [1, 27, 29],
 [1, 28, 29],
 
+[1, 0, 1],
+[1, 0, 2],
+[1, 0, 3],
+[1, 0, 4],
+[1, 0, 5],
+[1, 0, 6],
+[1, 0, 7],
+[1, 0, 8],
+[1, 0, 9],
+[1, 0, 10],
+[1, 0, 11],
+[1, 0, 12],
+[1, 0, 13],
+[1, 0, 14],
+[1, 0, 15],
+[1, 0, 16],
+[1, 0, 17],
+[1, 0, 18],
+[1, 0, 19],
+[1, 0, 20],
+[1, 0, 21],
+[1, 0, 22],
+[1, 0, 23],
+[1, 0, 24],
+[1, 0, 25],
+[1, 0, 26],
+[1, 0, 27],
+[1, 0, 28],
+[1, 0, 29],
 ]
+
+
+
+with open("levels/corrupt.data", "wb") as lvl:
+    record = pickle.Pickler(lvl)
+    record.dump(level)
+
+print("File created with success")
