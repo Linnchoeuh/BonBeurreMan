@@ -15,3 +15,5 @@ grille = []
 for x in range(15+1):
     for y in range(13+1):
         grille.append([x,y])
+
+print(grille)
