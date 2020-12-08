@@ -71,6 +71,8 @@ fichiers = temp
 md = mapdisplayer.Mapdislayer()
 result = "ok"
 level_select_offset = 0
+pause = False
+escape_released = True
     
 # Génération des fonctions -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -120,9 +122,12 @@ fps_text = pygame.font.Font(join("fonts", "VCR_OSD_MONO_1.ttf"), round(res_adapt
 text_40a = pygame.font.Font(join("fonts", "arialbd.ttf"), round(res_adaptation(60)))
 text_150a = pygame.font.Font(join("fonts", "arialbd.ttf"), round(res_adaptation(150)))
 
+window_surface.blit(text_150a.render("Chargement...", True, white), res_pos(450,425))
+pygame.display.flip()
+
 #Chargement des textures
 warn = pygame.image.load(f"img/ui/warn.png").convert_alpha() #Fonction pour importer l'image
-warn = pygame.transform.smoothscale(warn, res_pos(220,200)) #N'utiliser pas smooth scale sur une pixel art car ca la rendrait flou
+warn = pygame.transform.smoothscale(warn, res_pos(220,200)) #N'utiliser pas smooth scale sur une pixel art car ca le rendrait flou
 # warn = pygame.transform.scale(warn, res_pos(220,200)) #Fonction pour la scale a la résolution d'affichage
 
 left_arrow = pygame.image.load(f"img/ui/left_arrow.png").convert_alpha()
@@ -130,6 +135,11 @@ left_arrow = pygame.transform.smoothscale(left_arrow, res_pos(95,180))
 
 right_arrow = pygame.image.load(f"img/ui/right_arrow.png").convert_alpha()
 right_arrow = pygame.transform.smoothscale(right_arrow, res_pos(95,180))
+
+ground = pygame.image.load(f"img/map/ground.png").convert_alpha()
+block = pygame.image.load(f"img/map/block.png").convert_alpha()
+break_block = pygame.image.load(f"img/map/break_block.png").convert_alpha()
+wall = pygame.image.load(f"img/map/wall.png").convert_alpha()
 
 
 
@@ -185,18 +195,24 @@ while launched: # Pour fermer la fenêtre
         while i <= k+4: #Affiche les niveaux
             if i+1 > len(fichiers):
                 break
-            if collision_rect(160+i*325-k*325, 300, 265, 300, f"{fichiers[i]}")[1] == True:
-                result = md.load(fichiers[i])
+            if collision_rect(160+i*325-k*325, 300, 265, 300, f"{fichiers[i]}")[1] == True: #Si un niveau est activé
+                window_surface.fill(black)
+                window_surface.blit(text_150a.render("Chargement...", True, white), res_pos(450,425))
+                pygame.display.flip()
+                result = md.load(fichiers[i], res)
                 if result == "Invalid extension" or result == "Corrupted map":
                     menu = 10
+                else:
+                    menu = 3
             i += 1
         
-        if collision_rect(0, 975, 300, 105, "Retour")[1] == True:
-            menu = 0
-        if collision_rect(1320, 975, 600, 105, "Connecter manettes")[1] == True:
-            pass
-        if collision_rect(490, 975, 675, 105, "Connexion multi local")[1] == True:
-            pass
+        if menu != 3:
+            if collision_rect(0, 975, 300, 105, "Retour")[1] == True:
+                menu = 0
+            if collision_rect(1320, 975, 600, 105, "Connecter manettes")[1] == True:
+                pass
+            if collision_rect(490, 975, 675, 105, "Connexion multi local")[1] == True:
+                pass
     
     if menu == 2: #Options --------------------------------------------------------------------------------------------------------------------------------------------------------
         if load_menu != 2: # Mettez ici les éléments a charger une seule fois
@@ -205,7 +221,42 @@ while launched: # Pour fermer la fenêtre
         if collision_rect(0, 975, 300, 105, "Retour")[1] == True:
             menu = 0    
     
-    
+    if menu == 3:
+        if load_menu != 3: # Mettez ici les éléments a charger une seule fois
+            mouse_click_left = False
+            load_menu = 3
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        if escape_released == True: #Activation de la pause
+            if pause == False and keyboard_input["ESCAPE"] == True:
+                escape_released = False
+                pause = True
+            elif keyboard_input["ESCAPE"] == True:
+                escape_released = False
+                pause = False
+        
+        if keyboard_input["ESCAPE"] == True:
+            escape_released = False
+        else:
+            escape_released = True
+
+        if pause == True:
+            window_surface.blit(text_150a.render("Pause", True, white), res_pos(720,0))
+            if collision_rect(790, 500, 300, 105, "Continuer")[1] == True:
+                pause = False
+            if collision_rect(530, 700, 825, 105, "Retour au choix des niveaux")[1] == True:
+                menu = 1
+                pause = False
+
+                
+
     if menu == 10:
         window_surface.blit(warn, res_pos(850,100))
         if result == "Invalid extension":
@@ -233,4 +284,5 @@ while launched: # Pour fermer la fenêtre
 
     update_fps() # Affiche les fps
     pygame.display.flip() # Met a jour l'affichage
-    dt = clock.tick(60)/1500 # Permet de limiter la framerate a 60fps
+    dt = clock.tick(60)/1000 # Permet de limiter la framerate a 60fps
+    print(dt)

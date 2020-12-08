@@ -19,3 +19,4 @@ for x in range(15+1):
 print(grille)
 
 #coucou on fait des tests
+#jvois ca bon courage!
