@@ -1,5 +1,16 @@
 import pickle
-from PIL import Image
+from os import system
+try:
+    from PIL import Image
+except:
+    print("Erreur PIL n'est pas installé.")
+    print("Installation automatique...")
+    print("Mise à jour de pip...")
+    system("python -m pip install --upgrade pip")
+    print("Installation de PIL...")
+    system("pip install pillow")
+    input("Pip à été mis à jour et pil a été installé.\nSi le programme ne se lance toujours pas, faite manuellement les installations\nPour installer voici la marche à suivre:\nPremièrement faites 'windows+r', tapez 'cmd' et appuyer sur entré.\n Nous allons d'abbord vérifier que pip est à jour, entrez la commande si dessous dans l'invite de commande que vous avez ouvert:\npython -m pip install --upgrade pip\nAttendez la fin de l'instalation et entrez ensuite cette commande pour installer pygame:\npip install pillow\n Une fois l'installation terminé vous devriez pouvoir lancer correctement ce programme\n Appuyez sur entrée pour continuer.")
+    from PIL import Image
 
 class Mapdislayer:
     def __init__(self, res):
