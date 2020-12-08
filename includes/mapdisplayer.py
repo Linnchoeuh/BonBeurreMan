@@ -1,20 +1,21 @@
 import pickle
 
-res = [0,0]
-def res_pos(spacex = 0, spacey = 0): # Permet de positionner un élement au meme endroit peu importe la résolution d'affichage
-    return round(spacex * res[0]/1920) , round(spacey * res[1]/1080)
 
 class Mapdislayer:
-    def __init__(self, cres):
+    def __init__(self, res):
         self.mapcontent = []
         self.maplimit = [0, 0]
         self.playersspawns = [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]
         self.centeringmapx = 0
+        self.centeringmapy = 0
         self.blockscale = 0
-        res = cres
+        self.res = res
+        self.texture = []
 
+    def res_pos(self, spacex = 0, spacey = 0): # Permet de positionner un élement au meme endroit peu importe la résolution d'affichage
+        return round(spacex * self.res[0]/1920) , round(spacey * self.res[1]/1080)
 
-    def load(self, file_name, res, textures, pygame):
+    def load(self, file_name, res, pygame, ground, block, break_block, wall):
         #Verifie que le fichier est utilisable
         try: #Détecte si le fichier a été suprimé, ou si le fichier ne fini pas par l'extension .data
             with open(f"levels/{file_name}.data", "rb") as lvl:
@@ -38,39 +39,40 @@ class Mapdislayer:
         for i in range(len(self.mapcontent)): #vérifie que la liste ne contient pas d'élément qui dépasse de la carte, et les retire le cas echeant
             if self.mapcontent[i][1] <= self.maplimit[0] and self.mapcontent[i][2] <= self.maplimit[1]:
                 temp.append(self.mapcontent[i])
-        a = 0
+        
         self.mapcontent = [] #trie et rempli les cases n'ayant pas été référencé par du sol
         for i in range(self.maplimit[1]+1):
             for k in range(self.maplimit[0]+1):
-                # print(f"compare {temp[a]} | {[temp[a][0], i, k]}")
-                if temp[a] == [temp[a][0], i, k]:
-                    self.mapcontent.append(temp[a])
-                    # print(True)
-                else:
-                    self.mapcontent.append([0, i, k])
-            a += 1
-        if 1920/(self.maplimit[0]+1) < 1080/(self.maplimit[1]+1):
-            self.blockscale = (1920/(self.maplimit[0]+1)) * res[0]/1920
-            self.centeringmapx = 0
-            # print("x")
-        else:
-            self.blockscale = (1080/(self.maplimit[1]+1)) * res[1]/1080
-            self.centeringmap = res[0]/2-((self.maplimit[0]+1)*self.blockscale)/2
-            # print("y")
-        self.texture = [ground, block, break_block, wall]
-        ground = pygame.transform.scale(textures[0], res_pos(self.blockscale,self.blockscale))
-        block = pygame.transform.scale(textures[1], res_pos(self.blockscale,self.blockscale))
-        break_block = pygame.transform.scale(textures[2], res_pos(self.blockscale,self.blockscale))
-        wall = pygame.transform.scale(textures[3], res_pos(self.blockscale,self.blockscale))
+                block_exist = False
+                for a in range(len(temp)):
+                    if temp[a] == [temp[a][0], k, i]:
+                        self.mapcontent.append(temp[a])
+                        block_exist = True
+                        break
+                    if block_exist == False:
+                        self.mapcontent.append([0, k, i])
         
-        # print(self.blockscale, self.centeringmap)
+        if 1920/(self.maplimit[0]+1) < 1080/(self.maplimit[1]+1):
+            self.blockscale = int(res[0]/(self.maplimit[0]+1))
+            self.centeringmapx = 0
+            self.centeringmapy = res[1]/2-(self.blockscale*(self.maplimit[1]+1))/2
+        else:
+            self.blockscale = int(res[1]/(self.maplimit[1]+1))
+            self.centeringmapx = res[0]/2-(self.blockscale*(self.maplimit[0]+1))/2
+            self.centeringmapy = 0
 
+        self.texture = [pygame.transform.scale(ground, (self.blockscale,self.blockscale)), 
+                        pygame.transform.scale(block, (self.blockscale,self.blockscale)),
+                        pygame.transform.scale(break_block, (self.blockscale,self.blockscale)),
+                        pygame.transform.scale(wall, (self.blockscale,self.blockscale))]
+        
+        temp = []
+        for i in range(len(self.mapcontent)):
+            temp.append([self.mapcontent[i][0], (self.centeringmapx+self.blockscale*self.mapcontent[i][1], self.centeringmapy+self.blockscale*self.mapcontent[i][2])])
+        self.mapcontent = temp
         
         return "ok"
 
     def displayer(self, window_surface, warn):
-        window_surface.blit(warn, res_pos(0,0))
-        print(warn, res_pos(0,0))
-        print(self.texture[self.mapcontent[0][0]], res_pos(self.centeringmapx+self.blockscale*self.mapcontent[0][1],self.blockscale*self.mapcontent[0][2]))
         for i in range(len(self.mapcontent)):
-            window_surface.blit(self.texture[self.mapcontent[i][0]], res_pos(self.centeringmapx+self.blockscale*self.mapcontent[i][1],self.blockscale*self.mapcontent[i][2]))
+            window_surface.blit(self.texture[self.mapcontent[i][0]], self.mapcontent[i][1])

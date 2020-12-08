@@ -11,7 +11,7 @@ except:
     print("Pip à été mis à jour et pygame a été installé.\nSi le programme ne se lance toujours pas, faite manuellement les installations\nPour installer voici la marche à suivre:\nPremièrement faites 'windows+r', tapez 'cmd' et appuyer sur entré.\n Nous allons d'abbord vérifier que pip est à jour, entrez la commande si dessous dans l'invite de commande que vous avez ouvert:\npython -m pip install --upgrade pip\nAttendez la fin de l'instalation et entrez ensuite cette commande pour installer pygame:\npip install pygame\n Une fois l'installation terminé vous devriez pouvoir lancer correctement ce programme\n Appuyez sur entrée pour continuer.")
     import pygame
 
-import includes.player as player
+# import includes.player as player
 import includes.bomb as bomb
 import includes.mapdisplayer as mapdisplayer
 import includes.keyboard_input_detect as keyboard_input_detect
@@ -21,7 +21,7 @@ from os.path import isfile, join
 
 
 # Definitions des variables -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-player1 = Player()
+# player1 = Player()
 
 red = (255, 0, 0) # Quelque variable de couleur prédéfini
 green = (0, 255, 0)
@@ -35,8 +35,8 @@ gray = (150,150,150)
 dark_gray = (75, 75, 75)
 black = (0, 0, 0)
 
-res = [1280, 720] # Definition de la résolution d'affichage
-# res = [640, 360]
+# res = [1280, 720] # Definition de la résolution d'affichage
+res = [640, 360]
 mx = 0 # Definition de la position x de la souris
 my = 0 # Definition de la position y de la souris
 mousepress = [0,0,0] # Permet d'acceder au input de la souris, sachant que mousepress[0] = click gauche, mousepress[1] = click molette, mousepress[2] = click droit
@@ -118,7 +118,9 @@ clock = pygame.time.Clock()
 
 pygame.display.set_caption("BonBeurreMan") # Renommer l'intitulé de la fenêtre
 
+# window_surface = pygame.display.set_mode(res, pygame.FULLSCREEN)
 window_surface = pygame.display.set_mode(res)
+
 
 #Chargement des polices d'écritures
 fps_text = pygame.font.Font(join("fonts", "VCR_OSD_MONO_1.ttf"), round(res_adaptation(33))) # Autres
@@ -202,7 +204,7 @@ while launched: # Pour fermer la fenêtre
                 window_surface.fill(black)
                 window_surface.blit(text_150a.render("Chargement...", True, white), res_pos(450,425))
                 pygame.display.flip()
-                result = md.load(fichiers[i], res, [ground, block, break_block, wall], pygame)
+                result = md.load(fichiers[i], res, pygame, ground, block, break_block, wall) #Chargement du niveau selectionné
                 if result == "Invalid extension" or result == "Corrupted map":
                     menu = 10
                 else:

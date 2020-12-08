@@ -6,7 +6,7 @@ import pickle
 # 3 = wall
 # 4 = power-up
 
-level = ["MapApprovedCertificate", 29, 29, [[1,1],[28,28],[28,1],[1,28],[15,1],[28,15],[15,28],[1,15]],   #Taille de la map x, Taille de la map y, positions d'apparition de chaque joueur
+level = ["MapApprovedCertificate", 3, 29, [[1,1],[28,28],[28,1],[1,28],[15,1],[28,15],[15,28],[1,15]],   #Taille de la map x, Taille de la map y, positions d'apparition de chaque joueur
 #Contour de la map
 [3, 0, 0], #type de block, x, y
 [3, 1, 0],
@@ -131,7 +131,7 @@ level = ["MapApprovedCertificate", 29, 29, [[1,1],[28,28],[28,1],[1,28],[15,1],[
 
 
 
-with open("levels/level1.data", "wb") as lvl:
+with open("levels/hoho.data", "wb") as lvl:
     record = pickle.Pickler(lvl)
     record.dump(level)
 
