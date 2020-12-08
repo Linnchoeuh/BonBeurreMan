@@ -285,4 +285,3 @@ while launched: # Pour fermer la fenêtre
     update_fps() # Affiche les fps
     pygame.display.flip() # Met a jour l'affichage
     dt = clock.tick(60)/1000 # Permet de limiter la framerate a 60fps
-    print(dt)

@@ -37,7 +37,7 @@ class Mapdislayer:
         self.mapcontent = [] #trie et rempli les cases n'ayant pas été référencé par du sol
         for i in range(self.maplimit[1]+1):
             for k in range(self.maplimit[0]+1):
-                print(f"compare {temp[a]} | {[temp[a][0], i, k]}")
+                # print(f"compare {temp[a]} | {[temp[a][0], i, k]}")
                 if temp[a] == [temp[a][0], i, k]:
                     self.mapcontent.append(temp[a])
                     print(True)
@@ -47,13 +47,13 @@ class Mapdislayer:
         if 1920/(self.maplimit[0]+1) < 1080/(self.maplimit[1]+1):
             self.blockscale = (1920/(self.maplimit[0]+1)) * res[0]/1920
             self.centeringmap = 0
-            print("x")
+            # print("x")
         else:
             self.blockscale = (1080/(self.maplimit[1]+1)) * res[1]/1080
             self.centeringmap = res[0]/2-((self.maplimit[0]+1)*self.blockscale)/2
-            print("y")
+            # print("y")
 
         
-        print(self.blockscale, self.centeringmap)
+        # print(self.blockscale, self.centeringmap)
         
         return "ok"
