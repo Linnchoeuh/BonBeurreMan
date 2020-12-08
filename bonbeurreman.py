@@ -35,8 +35,8 @@ gray = (150,150,150)
 dark_gray = (75, 75, 75)
 black = (0, 0, 0)
 
-# res = [1280, 720] # Definition de la résolution d'affichage
-res = [640, 360]
+res = [1280, 720] # Definition de la résolution d'affichage
+# res = [640, 360]
 mx = 0 # Definition de la position x de la souris
 my = 0 # Definition de la position y de la souris
 mousepress = [0,0,0] # Permet d'acceder au input de la souris, sachant que mousepress[0] = click gauche, mousepress[1] = click molette, mousepress[2] = click droit
