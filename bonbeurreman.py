@@ -230,9 +230,12 @@ while launched: # Pour fermer la fenêtre
     if menu == 3:
         if load_menu != 3: # Mettez ici les éléments a charger une seule fois
             mouse_click_left = False
+            collisions = md.collisions_updater([])
             load_menu = 3
-        
+        collisition_modification = []
 
+        
+        collisions = md.collisions_updater([collisition_modification])
         md.displayer(window_surface, warn)
         
 

@@ -23,6 +23,7 @@ class Mapdislayer:
         self.res = res
         self.texture = []
         self.bg_map = 0
+        self.collisionsmap = [] #0 pas de collisions, 1 collisions, 2 block cassable, 3 joueur, 4 bomb, 5 power up
 
     def res_pos(self, spacex = 0, spacey = 0): # Permet de positionner un élement au meme endroit peu importe la résolution d'affichage
         return round(spacex * self.res[0]/1920) , round(spacey * self.res[1]/1080)
@@ -74,7 +75,16 @@ class Mapdislayer:
 
         self.texture = [pygame.transform.scale(break_block, (self.blockscale,self.blockscale))
                         ]
-        
+        self.collisionsmap = []
+        for i in range(len(self.mapcontent)):
+            if self.mapcontent[i][0] == 1 or self.mapcontent[i][0] == 3:
+                self.collisionsmap.append(1)
+            elif self.mapcontent[i][0] == 2:
+                self.collisionsmap.append(2)
+            else:
+                self.collisionsmap.append(0)
+        print(self.collisionsmap)
+
         temp = []
         for i in range(len(self.mapcontent)):
             if self.mapcontent[i][0] == 2:
@@ -115,7 +125,18 @@ class Mapdislayer:
         
         return "ok"
 
+    # type de block : (si le block n'est pas renseigné il sera remplacé par un ground)
+    # 0 = ground
+    # 1 = block solid
+    # 2 = block breakable
+    # 3 = wall
+    # 4 = power-up
     def displayer(self, window_surface, warn):
         window_surface.blit(self.bg_map, (self.centeringmapx, self.centeringmapy))
         for i in range(len(self.mapcontent)):
             window_surface.blit(self.texture[self.mapcontent[i][0]], self.mapcontent[i][1])
+    
+    def collisions_updater(self, modification):
+        if modification != []:
+            pass
+        return self.collisionsmap
