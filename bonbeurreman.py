@@ -110,6 +110,7 @@ def collision_rect_texture(x, y, texture, texture_rect, click_block_condition = 
     return pressed
 
 pygame.init() # Lancement de pygame -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+print("Jeu réalisé par Tony, Jean-Pierre, Kimi et Lenny")
 
 clock = pygame.time.Clock()
 

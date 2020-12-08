@@ -40,7 +40,7 @@ class Mapdislayer:
                 # print(f"compare {temp[a]} | {[temp[a][0], i, k]}")
                 if temp[a] == [temp[a][0], i, k]:
                     self.mapcontent.append(temp[a])
-                    print(True)
+                    # print(True)
                 else:
                     self.mapcontent.append([0, i, k])
             a += 1

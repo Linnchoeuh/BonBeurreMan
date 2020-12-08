@@ -16,7 +16,7 @@ for x in range(15+1):
     for y in range(13+1):
         grille.append([x,y])
 
-print(grille)
+# print(grille)
 
 #coucou on fait des tests
 #jvois ca bon courage!
