@@ -283,9 +283,6 @@ while launched: # Pour fermer la fenêtre
             window_surface.blit(text_40a.render("car ce n'est pas une carte de jeu pour BonBeurreMan", True, red), res_pos(200,525))
         if collision_rect(0, 975, 300, 105, "Retour")[1] == True:
             menu = 1
-
-
-    # print(collision_rect(50 ,50, 50, 50, "oui"))
     
     if mousepress[0] == 1:
         mouse_click_left = False
