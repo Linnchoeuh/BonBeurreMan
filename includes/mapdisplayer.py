@@ -1,15 +1,20 @@
 import pickle
 
+res = [0,0]
+def res_pos(spacex = 0, spacey = 0): # Permet de positionner un élement au meme endroit peu importe la résolution d'affichage
+    return round(spacex * res[0]/1920) , round(spacey * res[1]/1080)
+
 class Mapdislayer:
-    def __init__(self):
+    def __init__(self, cres):
         self.mapcontent = []
         self.maplimit = [0, 0]
         self.playersspawns = [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]
-        self.centeringmap = 0
+        self.centeringmapx = 0
         self.blockscale = 0
+        res = cres
 
 
-    def load(self, file_name, res):
+    def load(self, file_name, res, textures, pygame):
         #Verifie que le fichier est utilisable
         try: #Détecte si le fichier a été suprimé, ou si le fichier ne fini pas par l'extension .data
             with open(f"levels/{file_name}.data", "rb") as lvl:
@@ -46,14 +51,26 @@ class Mapdislayer:
             a += 1
         if 1920/(self.maplimit[0]+1) < 1080/(self.maplimit[1]+1):
             self.blockscale = (1920/(self.maplimit[0]+1)) * res[0]/1920
-            self.centeringmap = 0
+            self.centeringmapx = 0
             # print("x")
         else:
             self.blockscale = (1080/(self.maplimit[1]+1)) * res[1]/1080
             self.centeringmap = res[0]/2-((self.maplimit[0]+1)*self.blockscale)/2
             # print("y")
-
+        self.texture = [ground, block, break_block, wall]
+        ground = pygame.transform.scale(textures[0], res_pos(self.blockscale,self.blockscale))
+        block = pygame.transform.scale(textures[1], res_pos(self.blockscale,self.blockscale))
+        break_block = pygame.transform.scale(textures[2], res_pos(self.blockscale,self.blockscale))
+        wall = pygame.transform.scale(textures[3], res_pos(self.blockscale,self.blockscale))
         
         # print(self.blockscale, self.centeringmap)
+
         
         return "ok"
+
+    def displayer(self, window_surface, warn):
+        window_surface.blit(warn, res_pos(0,0))
+        print(warn, res_pos(0,0))
+        print(self.texture[self.mapcontent[0][0]], res_pos(self.centeringmapx+self.blockscale*self.mapcontent[0][1],self.blockscale*self.mapcontent[0][2]))
+        for i in range(len(self.mapcontent)):
+            window_surface.blit(self.texture[self.mapcontent[i][0]], res_pos(self.centeringmapx+self.blockscale*self.mapcontent[i][1],self.blockscale*self.mapcontent[i][2]))

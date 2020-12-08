@@ -21,6 +21,7 @@ from os.path import isfile, join
 
 
 # Definitions des variables -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+player1 = Player()
 
 red = (255, 0, 0) # Quelque variable de couleur prédéfini
 green = (0, 255, 0)
@@ -68,11 +69,12 @@ for i in range(len(fichiers)):
 fichiers = temp
 # print(fichiers)
 
-md = mapdisplayer.Mapdislayer()
+md = mapdisplayer.Mapdislayer(res)
 result = "ok"
 level_select_offset = 0
 pause = False
 escape_released = True
+bb = False
     
 # Génération des fonctions -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -155,8 +157,8 @@ while launched: # Pour fermer la fenêtre
     keyboard_input = keyboard_input_detect.keyboard_input_fonc(pygame)
     # print(keyboard_input)
     
-    mx, my = pygame.mouse.get_pos()
-    mousepress = pygame.mouse.get_pressed()
+    mx, my = pygame.mouse.get_pos() #Position de la souris
+    mousepress = pygame.mouse.get_pressed() #Vérifie si un bouton de la souris est appuyé
     
     window_surface.fill(black)
     
@@ -193,14 +195,14 @@ while launched: # Pour fermer la fenêtre
         k = i = level_select_offset*5
         if i < 0:
             i = 0
-        while i <= k+4: #Affiche les niveaux
+        while i <= k+4: #Affiche la selection des niveaux
             if i+1 > len(fichiers):
                 break
             if collision_rect(160+i*325-k*325, 300, 265, 300, f"{fichiers[i]}")[1] == True: #Si un niveau est activé
                 window_surface.fill(black)
                 window_surface.blit(text_150a.render("Chargement...", True, white), res_pos(450,425))
                 pygame.display.flip()
-                result = md.load(fichiers[i], res)
+                result = md.load(fichiers[i], res, [ground, block, break_block, wall], pygame)
                 if result == "Invalid extension" or result == "Corrupted map":
                     menu = 10
                 else:
@@ -227,10 +229,21 @@ while launched: # Pour fermer la fenêtre
             mouse_click_left = False
             load_menu = 3
         
+
+        md.displayer(window_surface, warn)
         
-        
-        
-        
+
+        #if keyboard_input["SPACE"] == True:
+        #    bb = True
+        #    timer = 180
+
+        #if bb == True:            
+        #    if timer > 0:
+        #        poseBomb()
+        #        timer -= dt*70 # ????
+        #    else:
+        #        bb = False
+        #        timer = 180
         
         
         
@@ -277,10 +290,7 @@ while launched: # Pour fermer la fenêtre
     else:
         mouse_click_left = True
 
-
-    
-
-
+    #Vérifie le click gauche
 
 
     update_fps() # Affiche les fps

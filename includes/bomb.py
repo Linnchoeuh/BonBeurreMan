@@ -11,6 +11,10 @@ class Bomb(): # Création de la casse de la bombe
         self.power = power
         self.timer = 180
 
+    def poseBomb(self, player, surface):
+        bbombe_image = pygame.image.load(self.skin)
+        surface.blit(bbombe_image, [self.x, self.y])
+
     def explosion(self):
         if self.timer > 0:
             self.timer -= 1
