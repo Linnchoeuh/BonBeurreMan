@@ -181,6 +181,10 @@ pause = False
 escape_released = True
 bb = False
 level_slide = 0
+arrows = (False, False)
+arrows_slide = [0,0]
+fade_var = [0, 0]
+temp_menu = 0
     
 # Génération des fonctions -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -209,10 +213,37 @@ def collision_rect(x, y, width, height, text = False, click_block_condition = Fa
 
 def collision_rect_texture(x, y, texture, texture_rect, click_block_condition = False): # Permet de creer une zone de collision avec une image fixe(position x, position y, texture, sa zone de collisions,
     pressed = False                                                                     # empêcher l'activation du boutton si le click gauche de la souris est déjà pressé
-    window_surface.blit(texture, res_pos(x,y))                                          # (mettre la variable mouse_click_left)(par défaut actif))
-    if mousepress[0] and mouse_click_left == True and texture_rect.collidepoint(mx,my) == 1 or mousepress[0] and click_block_condition == True and texture_rect.collidepoint(mx,my) == 1:
-        pressed = True
-    return pressed
+    touched = False 
+    window_surface.blit(texture, res_pos(x,y))                                         # (mettre la variable mouse_click_left)(par défaut actif))
+    if texture_rect.collidepoint(mx,my) == 1:
+        touched = True 
+        if mousepress[0] and mouse_click_left == True or mousepress[0] and click_block_condition == True:
+            pressed = True
+    return (touched, pressed)
+
+def fade_in(fade, fmenu, ftemp_menu, initial_menu):
+    if fade == [255, -1]:
+        fmenu = ftemp_menu
+        window_surface.fill(black)
+    if fade == [0, 1]:
+        ftemp_menu = fmenu
+        fmenu = initial_menu
+    if fade[1] == 1:
+        if fade[0] + 20 < 255:
+            s.set_alpha(fade[0] + 20)
+            fade[0] += 20
+        else:   
+            s.set_alpha(255)
+            fade = [255, -1]
+    if fade[1] == -1 and fade[0] != 0 and fmenu == ftemp_menu:
+        if fade[0] - 20 > 0:
+            s.set_alpha(fade[0] - 20)
+            fade[0] -= 20   
+        else:
+            s.set_alpha(0)
+            fade = [0, 0]
+    return (fade, fmenu, ftemp_menu)
+
 
 pygame.init() # Lancement de pygame -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -235,7 +266,7 @@ pygame.display.flip()
 #Chargement des textures
 
 s = pygame.Surface(res)  # the size of your rect
-s.set_alpha(128)         # alpha level
+s.set_alpha(0)         # alpha level
 s.fill((0, 0, 0))        # this fills the entire surface
 
 for i in range(len(fichiers)):
@@ -275,27 +306,35 @@ while launched: # Pour fermer la fenêtre
     mousepress = pygame.mouse.get_pressed() #Vérifie si un bouton de la souris est appuyé
     
     window_surface.fill(black)
-    
+
     if menu == 0: #Menu principal -------------------------------------------------------------------------------------------------------------------------------------------------------------
         if load_menu != 0: # Mettez ici les éléments a charger une seule fois
             mouse_click_left = False
+            temp_menu = 0
             load_menu = 0
-        if collision_rect(810, 375, 300, 150, "Jouer")[1] == True: #Passe sur le menu de selection de niveau
+        
+        if collision_rect(810, 375, 300, 150, "Jouer")[1] == True and temp_menu == 0: #Passe sur le menu de selection de niveau
             menu = 1
+            fade_var = [0, 1]
             level_select_offset = 0
-        if collision_rect(810, 600, 300, 150, "Options")[1] == True: #Passe sur les options
+        if collision_rect(810, 600, 300, 150, "Options")[1] == True and temp_menu == 0: #Passe sur les options
             menu = 2
-        if collision_rect(810, 825, 300, 150, "Quitter")[1] == True: #Ferme le jeu
+            fade_var = [0, 1]
+        if collision_rect(810, 825, 300, 150, "Quitter")[1] == True and temp_menu == 0: #Ferme le jeu
             launched = False
     
+        fade_var, menu, temp_menu = fade_in(fade_var, menu, temp_menu, 0)
+
     if menu == 1: #Selection du niveau --------------------------------------------------------------------------------------------------------------------------------------------------------
         if load_menu != 1: # Mettez ici les éléments a charger une seule fois
             mouse_click_left = False
             left_arrow_rect = left_arrow.get_rect(topleft=res_pos(25,350))
             right_arrow_rect = right_arrow.get_rect(topleft=res_pos(1800,350))
             level_slide = 0
+            arrows = (False, False)
+            arrows_slide = [0,0]
+            arrows_slide_move = 15
             load_menu = 1
-
         
         window_surface.blit(text_150a.render("Choisissez votre niveau", True, white), res_pos(60,0))
 
@@ -309,6 +348,7 @@ while launched: # Pour fermer la fenêtre
             window_surface.blit(minimap_list[round(i)], res_pos(cache, 300))
             window_surface.blit(text_40a.render(fichiers[round(i)], True, white), res_pos(cache, 610))
             if collision_rect(cache, 300, 265, 400)[1] == True: #Si un niveau est activé
+                fade_var = [0, 0]
                 window_surface.fill(black)
                 window_surface.blit(text_150a.render("Chargement...", True, white), res_pos(450,425))
                 pygame.display.flip()
@@ -320,15 +360,32 @@ while launched: # Pour fermer la fenêtre
             i += 1
         
         if level_select_offset*5 < len(fichiers)-5:
-            if collision_rect_texture(1800, 360, right_arrow, right_arrow_rect) == True:
+            arrows = collision_rect_texture(1800+arrows_slide[1], 360, right_arrow, right_arrow_rect) #Fleche droite
+            if arrows[1] == True:
                 level_select_offset += 1
                 level_slide = 200
                 mouse_click_left = False
+                arrows_slide = [arrows_slide[0], 0]
+            elif arrows[0] == True and arrows_slide[1] < 25:
+                arrows_slide = [arrows_slide[0], arrows_slide[1]+arrows_slide_move]
+            elif arrows[0] == False:
+                arrows_slide = [arrows_slide[0], 0]
+            else:
+                arrows_slide = [arrows_slide[0], 25]
         if level_select_offset*5 >= 4:
-            if collision_rect_texture(25, 360, left_arrow, left_arrow_rect) == True:
+            arrows = collision_rect_texture(25-arrows_slide[0], 360, left_arrow, left_arrow_rect) #Fleche gauche
+            if arrows[1] == True:
                 level_select_offset -= 1
                 level_slide = -200
                 mouse_click_left = False
+                arrows_slide = [0, arrows_slide[1]]
+            elif arrows[0] == True and arrows_slide[0] < 25:
+                arrows_slide = [arrows_slide[0]+arrows_slide_move, arrows_slide[1]]
+            elif arrows[0] == False:
+                arrows_slide = [0, arrows_slide[1]]
+            else:
+                arrows_slide = [25, arrows_slide[1]]
+
 
         if level_slide < 0:
             level_slide += 50
@@ -338,17 +395,28 @@ while launched: # Pour fermer la fenêtre
         if menu == 1:
             if collision_rect(0, 975, 300, 105, "Retour")[1] == True:
                 menu = 0
+                fade_var = [0, 1]
             if collision_rect(1320, 975, 600, 105, "Connecter manettes")[1] == True:
                 pass
             if collision_rect(490, 975, 675, 105, "Connexion multi local")[1] == True:
                 pass
+
+        fade_var, menu, temp_menu = fade_in(fade_var, menu, temp_menu, 1)
+            
+
+
     
     if menu == 2: #Options --------------------------------------------------------------------------------------------------------------------------------------------------------
         if load_menu != 2: # Mettez ici les éléments a charger une seule fois
             mouse_click_left = False
             load_menu = 2
+        
         if collision_rect(0, 975, 300, 105, "Retour")[1] == True:
-            menu = 0    
+            menu = 0
+            fade_var = [0, 1]
+
+        fade_var, menu, temp_menu = fade_in(fade_var, menu, temp_menu, 2)
+            
     
     if menu == 3:
         if load_menu != 3: # Mettez ici les éléments a charger une seule fois
@@ -382,6 +450,7 @@ while launched: # Pour fermer la fenêtre
             escape_released = True
 
         if pause == True:
+            s.set_alpha(128)
             window_surface.blit(s, (0,0))    # (0,0) are the top-left coordinates
             window_surface.blit(text_150a.render("Pause", True, white), res_pos(720,0))
             if collision_rect(790, 500, 300, 105, "Continuer")[1] == True:
@@ -389,6 +458,9 @@ while launched: # Pour fermer la fenêtre
             if collision_rect(530, 700, 825, 105, "Retour au choix des niveaux")[1] == True:
                 menu = 1
                 pause = False
+                fade_var = [0, 1]
+        
+        fade_var, menu, temp_menu = fade_in(fade_var, menu, temp_menu, 3)
 
                 
 
@@ -402,6 +474,9 @@ while launched: # Pour fermer la fenêtre
             window_surface.blit(text_40a.render("car ce n'est pas une carte de jeu pour BonBeurreMan", True, red), res_pos(200,525))
         if collision_rect(0, 975, 300, 105, "Retour")[1] == True:
             menu = 1
+            fade_var = [0, 1]
+
+        fade_var, menu, temp_menu = fade_in(fade_var, menu, temp_menu, 10)
     
     if mousepress[0] == 1:
         mouse_click_left = False
@@ -410,7 +485,9 @@ while launched: # Pour fermer la fenêtre
 
     #Vérifie le click gauche
 
-
+    if fade_var[0] != 0:
+        window_surface.blit(s, (0,0))
     update_fps() # Affiche les fps
     pygame.display.flip() # Met a jour l'affichage
     dt = clock.tick(60)/1000 # Permet de limiter la framerate a 60fps
+    # print(fade_var)
