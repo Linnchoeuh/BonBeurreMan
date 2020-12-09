@@ -31,8 +31,8 @@ from os import listdir
 from os.path import isfile, join
 import pickle
 
-
-
+print("Jeu réalisé par Tony, Jean-Pierre, Kimi et Lenny")
+print("Démarage de BonBeurreMan...")
 # Definitions des variables -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 player1 = player.Player("img/power_up/powerUp.png", 10, 100, 32, 32, 5)
 bbomb = bomb.Bomb("img/power_up/bombUp.png", player1.x, player1.y, 32, 32)
@@ -49,7 +49,7 @@ gray = (150,150,150)
 dark_gray = (75, 75, 75)
 black = (0, 0, 0)
 
-res = [1280, 720] # Definition de la résolution d'affichage
+res = [1920, 1080] # Definition de la résolution d'affichage
 # res = [640, 360]
 mx = 0 # Definition de la position x de la souris
 my = 0 # Definition de la position y de la souris
@@ -208,24 +208,20 @@ def collision_rect(x, y, width, height, text = False, click_block_condition = Fa
     return (touched, pressed)
 
 def collision_rect_texture(x, y, texture, texture_rect, click_block_condition = False): # Permet de creer une zone de collision avec une image fixe(position x, position y, texture, sa zone de collisions,
-    pressed = False                                                     # empêcher l'activation du boutton si le click gauche de la souris est déjà pressé
-    window_surface.blit(texture, res_pos(x,y))
-    # print(texture_rect.collidepoint(mx,my))
+    pressed = False                                                                     # empêcher l'activation du boutton si le click gauche de la souris est déjà pressé
+    window_surface.blit(texture, res_pos(x,y))                                          # (mettre la variable mouse_click_left)(par défaut actif))
     if mousepress[0] and mouse_click_left == True and texture_rect.collidepoint(mx,my) == 1 or mousepress[0] and click_block_condition == True and texture_rect.collidepoint(mx,my) == 1:
         pressed = True
-    # if devmode == True:
-    #     pygame.draw.rect(window_surface, white, pygame.Rect(res_pos(x)[0], res_pos(0,y)[1], res_pos(width)[0], res_pos(0,height)[1]), 1)
     return pressed
 
 pygame.init() # Lancement de pygame -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-print("Jeu réalisé par Tony, Jean-Pierre, Kimi et Lenny")
 
 clock = pygame.time.Clock()
 
 pygame.display.set_caption("BonBeurreMan") # Renommer l'intitulé de la fenêtre
 
-# window_surface = pygame.display.set_mode(res, pygame.FULLSCREEN)
-window_surface = pygame.display.set_mode(res)
+window_surface = pygame.display.set_mode(res, pygame.FULLSCREEN)
+# window_surface = pygame.display.set_mode(res)
 
 
 #Chargement des polices d'écritures
@@ -237,6 +233,10 @@ window_surface.blit(text_150a.render("Chargement...", True, white), res_pos(450,
 pygame.display.flip()
 
 #Chargement des textures
+
+s = pygame.Surface(res)  # the size of your rect
+s.set_alpha(128)         # alpha level
+s.fill((0, 0, 0))        # this fills the entire surface
 
 for i in range(len(fichiers)):
     minimapimg = pygame.image.load(f"img/temp/mini_map/{fichiers[i]}_cache.png").convert_alpha()
@@ -299,6 +299,26 @@ while launched: # Pour fermer la fenêtre
         
         window_surface.blit(text_150a.render("Choisissez votre niveau", True, white), res_pos(60,0))
 
+        k = i = level_select_offset*5
+        if i < 0:
+            i = 0
+        while i <= k+4: #Affiche la selection des niveaux
+            if i+1 > len(fichiers):
+                break
+            cache = (160+i*325-k*325)+level_slide
+            window_surface.blit(minimap_list[round(i)], res_pos(cache, 300))
+            window_surface.blit(text_40a.render(fichiers[round(i)], True, white), res_pos(cache, 610))
+            if collision_rect(cache, 300, 265, 400)[1] == True: #Si un niveau est activé
+                window_surface.fill(black)
+                window_surface.blit(text_150a.render("Chargement...", True, white), res_pos(450,425))
+                pygame.display.flip()
+                result = md.load(fichiers[i], res, pygame, Image, ground, block, break_block, wall) #Chargement du niveau selectionné
+                if result == "Invalid extension" or result == "Corrupted map":
+                    menu = 10
+                else:
+                    menu = 3
+            i += 1
+        
         if level_select_offset*5 < len(fichiers)-5:
             if collision_rect_texture(1800, 360, right_arrow, right_arrow_rect) == True:
                 level_select_offset += 1
@@ -315,26 +335,6 @@ while launched: # Pour fermer la fenêtre
         elif level_slide > 0:
             level_slide -= 50
 
-
-        k = i = level_select_offset*5
-        if i < 0:
-            i = 0
-        while i <= k+4: #Affiche la selection des niveaux
-            if i+1 > len(fichiers):
-                break
-            window_surface.blit(minimap_list[round(i)], res_pos((160+i*325-k*325)+level_slide, 300))
-            window_surface.blit(text_40a.render(fichiers[round(i)], True, white), res_pos((160+i*325-k*325)+level_slide, 610))
-            if collision_rect((160+i*325-k*325)+level_slide, 300, 265, 400)[1] == True: #Si un niveau est activé
-                window_surface.fill(black)
-                window_surface.blit(text_150a.render("Chargement...", True, white), res_pos(450,425))
-                pygame.display.flip()
-                result = md.load(fichiers[i], res, pygame, Image, ground, block, break_block, wall) #Chargement du niveau selectionné
-                if result == "Invalid extension" or result == "Corrupted map":
-                    menu = 10
-                else:
-                    menu = 3
-            i += 1
-        
         if menu == 1:
             if collision_rect(0, 975, 300, 105, "Retour")[1] == True:
                 menu = 0
@@ -382,6 +382,7 @@ while launched: # Pour fermer la fenêtre
             escape_released = True
 
         if pause == True:
+            window_surface.blit(s, (0,0))    # (0,0) are the top-left coordinates
             window_surface.blit(text_150a.render("Pause", True, white), res_pos(720,0))
             if collision_rect(790, 500, 300, 105, "Continuer")[1] == True:
                 pause = False

@@ -72,7 +72,7 @@ class Mapdislayer:
                 self.collisionsmap.append(2)
             else:
                 self.collisionsmap.append(0)
-        print(self.collisionsmap)
+        # print(self.collisionsmap)
 
         temp = []
         for i in range(len(self.mapcontent)):
