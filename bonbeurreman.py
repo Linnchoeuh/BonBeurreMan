@@ -185,6 +185,7 @@ arrows = (False, False)
 arrows_slide = [0,0]
 fade_var = [0, 0]
 temp_menu = 0
+fullscreen = False
     
 # Génération des fonctions -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -251,7 +252,7 @@ clock = pygame.time.Clock()
 
 pygame.display.set_caption("BonBeurreMan") # Renommer l'intitulé de la fenêtre
 
-# window_surface = pygame.display.set_mode(res, pygame.FULLSCREEN)
+
 window_surface = pygame.display.set_mode(res)
 
 
@@ -415,10 +416,22 @@ while launched: # Pour fermer la fenêtre
             menu = 0
             fade_var = [0, 1]
 
+        if collision_rect(200, 200, 300, 105, "Plein écran")[1] == True:
+            if fullscreen == False:
+                if res[1] == 1080:
+                    ctypes.windll.user32.SetProcessDPIAware()
+                window_surface = pygame.display.set_mode(res, pygame.FULLSCREEN)
+                fullscreen = True
+            else:
+                window_surface = pygame.display.set_mode(res)
+                fullscreen = False
+
+        
+
         fade_var, menu, temp_menu = fade_in(fade_var, menu, temp_menu, 2)
             
     
-    if menu == 3:
+    if menu == 3: #Jeu -----------------------------------------------------------------------------------------------------------------------------------------------------------------
         if load_menu != 3: # Mettez ici les éléments a charger une seule fois
             mouse_click_left = False
             collisions = md.collisions_updater([])
@@ -490,4 +503,3 @@ while launched: # Pour fermer la fenêtre
     update_fps() # Affiche les fps
     pygame.display.flip() # Met a jour l'affichage
     dt = clock.tick(60)/1000 # Permet de limiter la framerate a 60fps
-    # print(fade_var)
