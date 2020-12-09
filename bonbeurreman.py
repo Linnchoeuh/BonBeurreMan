@@ -49,7 +49,7 @@ gray = (150,150,150)
 dark_gray = (75, 75, 75)
 black = (0, 0, 0)
 
-res = [1920, 1080] # Definition de la résolution d'affichage
+res = [1280, 720] # Definition de la résolution d'affichage
 # res = [640, 360]
 mx = 0 # Definition de la position x de la souris
 my = 0 # Definition de la position y de la souris
@@ -213,8 +213,8 @@ def collision_rect(x, y, width, height, text = False, click_block_condition = Fa
 
 def collision_rect_texture(x, y, texture, texture_rect, click_block_condition = False): # Permet de creer une zone de collision avec une image fixe(position x, position y, texture, sa zone de collisions,
     pressed = False                                                                     # empêcher l'activation du boutton si le click gauche de la souris est déjà pressé
-    touched = False 
-    window_surface.blit(texture, res_pos(x,y))                                         # (mettre la variable mouse_click_left)(par défaut actif))
+    touched = False                                                                     # (mettre la variable mouse_click_left)(par défaut actif))
+    window_surface.blit(texture, res_pos(x,y))
     if texture_rect.collidepoint(mx,my) == 1:
         touched = True 
         if mousepress[0] and mouse_click_left == True or mousepress[0] and click_block_condition == True:
@@ -251,8 +251,8 @@ clock = pygame.time.Clock()
 
 pygame.display.set_caption("BonBeurreMan") # Renommer l'intitulé de la fenêtre
 
-window_surface = pygame.display.set_mode(res, pygame.FULLSCREEN)
-# window_surface = pygame.display.set_mode(res)
+# window_surface = pygame.display.set_mode(res, pygame.FULLSCREEN)
+window_surface = pygame.display.set_mode(res)
 
 
 #Chargement des polices d'écritures
@@ -266,7 +266,7 @@ pygame.display.flip()
 #Chargement des textures
 
 s = pygame.Surface(res)  # the size of your rect
-s.set_alpha(0)         # alpha level
+s.set_alpha(0)           # alpha level
 s.fill((0, 0, 0))        # this fills the entire surface
 
 for i in range(len(fichiers)):
