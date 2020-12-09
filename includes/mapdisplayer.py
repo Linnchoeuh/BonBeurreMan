@@ -1,16 +1,5 @@
 import pickle
 from os import system
-try:
-    from PIL import Image
-except:
-    print("Erreur PIL n'est pas installé.")
-    print("Installation automatique...")
-    print("Mise à jour de pip...")
-    system("python -m pip install --upgrade pip")
-    print("Installation de PIL...")
-    system("pip install pillow")
-    input("Pip à été mis à jour et pil a été installé.\nSi le programme ne se lance toujours pas, faite manuellement les installations\nPour installer voici la marche à suivre:\nPremièrement faites 'windows+r', tapez 'cmd' et appuyer sur entré.\n Nous allons d'abbord vérifier que pip est à jour, entrez la commande si dessous dans l'invite de commande que vous avez ouvert:\npython -m pip install --upgrade pip\nAttendez la fin de l'instalation et entrez ensuite cette commande pour installer pygame:\npip install pillow\n Une fois l'installation terminé vous devriez pouvoir lancer correctement ce programme\n Appuyez sur entrée pour continuer.")
-    from PIL import Image
 
 class Mapdislayer:
     def __init__(self, res):
@@ -28,7 +17,7 @@ class Mapdislayer:
     def res_pos(self, spacex = 0, spacey = 0): # Permet de positionner un élement au meme endroit peu importe la résolution d'affichage
         return round(spacex * self.res[0]/1920) , round(spacey * self.res[1]/1080)
 
-    def load(self, file_name, res, pygame, ground, block, break_block, wall):
+    def load(self, file_name, res, pygame, Image, ground, block, break_block, wall):
         #Verifie que le fichier est utilisable
         try: #Détecte si le fichier a été suprimé, ou si le fichier ne fini pas par l'extension .data
             with open(f"levels/{file_name}.data", "rb") as lvl:
