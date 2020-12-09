@@ -335,7 +335,7 @@ while launched: # Pour fermer la fenêtre
                     menu = 3
             i += 1
         
-        if menu == 2:
+        if menu == 1:
             if collision_rect(0, 975, 300, 105, "Retour")[1] == True:
                 menu = 0
             if collision_rect(1320, 975, 600, 105, "Connecter manettes")[1] == True:
