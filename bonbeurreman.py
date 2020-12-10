@@ -351,7 +351,7 @@ while launched: # Pour fermer la fenêtre
         while i <= k+4: #Affiche la selection des niveaux
             if i+1 > len(fichiers):
                 break
-            cache = (160+i*325-k*325)+(level_slide*frame_compensation)
+            cache = (160+i*325-k*325)+level_slide
             window_surface.blit(minimap_list[round(i)], res_pos(cache, 300))
             window_surface.blit(text_40a.render(fichiers[round(i)], True, white), res_pos(cache, 610))
             if collision_rect(cache, 300, 265, 400)[1] == True: #Si un niveau est activé
@@ -373,7 +373,7 @@ while launched: # Pour fermer la fenêtre
                 level_slide = 200
                 mouse_click_left = False
                 arrows_slide = [arrows_slide[0], 0]
-            elif arrows[0] == True and arrows_slide[1]*frame_compensation < 25:
+            elif arrows[0] == True and arrows_slide[1] < 25:
                 arrows_slide = [arrows_slide[0], arrows_slide[1]+arrows_slide_move]
             elif arrows[0] == False:
                 arrows_slide = [arrows_slide[0], 0]
