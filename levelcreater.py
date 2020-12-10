@@ -1,5 +1,4 @@
-# import pickle
-from pickle import Pickler
+import pickle
 # type de block : (si le block n'est pas renseigné il sera remplacé par un ground)
 # 0 = ground
 # 1 = block solid
@@ -134,8 +133,8 @@ level = ["MapApprovedCertificate", 29, 29, [[1,1],[28,28],[28,1],[1,28],[15,1],[
 
 
 
-with open("levels/leveel1.data", "wb") as lvl:
-    record = Pickler(lvl)
+with open("levels/level1.data", "wb") as lvl:
+    record = pickle.Pickler(lvl)
     record.dump(level)
 
 print("File created with success")
