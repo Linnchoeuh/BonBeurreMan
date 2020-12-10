@@ -3,7 +3,7 @@ import pygame
 class Bomb(): # Création de la casse de la bombe
     
     def __init__(self, sprite, posx, posy, lenght, width,  power = 1):
-        self.sprite = sprite
+        self.sprite = pygame.image.load(sprite)
         self.x = posx
         self.y = posy
         self.lenght = lenght
@@ -11,9 +11,8 @@ class Bomb(): # Création de la casse de la bombe
         self.power = power
         self.timer = 190
 
-    def poseBomb(self, player, surface):
-        bbombe_image = pygame.image.load(self.sprite)
-        return surface.blit(bbombe_image, [self.x, self.y])
+    def poseBomb(self, surface):
+        return surface.blit(self.sprite, [self.x, self.y])
 
     def explosion(self, dt):
         if self.timer > 10:
