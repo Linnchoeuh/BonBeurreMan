@@ -1,3 +1,4 @@
+# -*-coding:Utf-8 -*
 from os import system
 try:
     import pygame
@@ -26,10 +27,14 @@ import includes.player as player
 import includes.bomb as bomb
 import includes.mapdisplayer as mapdisplayer
 import includes.keyboard_input_detect as keyboard_input_detect
+import includes.map_file_load_indexer as map_indexer
 import ctypes
 from os import listdir
-from os.path import isfile, join
-import pickle
+from os.path import isfile, join, dirname, realpath
+from pickle import Pickler, Unpickler
+
+
+
 
 print("Jeu réalisé par Tony, Jean-Pierre, Kimi et Lenny")
 print("Démarage de BonBeurreMan...")
@@ -75,104 +80,11 @@ keyboard_input = {
     "ESCAPE" : False
 } #Dictionnaire des touches pressables
 
-fichiers = listdir("levels") #Liste les niveaux stocké dans le dossier levels, et seulement ceux qui contiennent .data dans leur nom
-# print(listdir("levels"))
-temp = []
-for i in range(len(fichiers)):
-    if fichiers[i].find(".data") != -1:
-        temp.append(fichiers[i][:fichiers[i].find(".data")])
-fichiers = temp
+script_path = dirname(realpath(__file__))
+script_path = script_path.replace("\\", "/")
 
-referenced_minimap = ["none"]
-try:
-    with open(f"includes/properties/minimap_cache.data", "rb") as minimapfile:
-        get_record = pickle.Unpickler(minimapfile)
-        referenced_minimap = get_record.load()
-except:
-    with open(f"includes/properties/minimap_cache.data", "wb") as minimapfile:
-        record = pickle.Pickler(minimapfile)
-        record.dump(referenced_minimap)
-
+fichiers = map_indexer.map_file_indexer(script_path, listdir, Image, Unpickler)
 minimap_list = []
-tempfichiers = []
-for b in range(len(fichiers)):
-    founded = False
-    check = False
-    for k in range(len(referenced_minimap)):
-        if fichiers[b] == referenced_minimap[k]:
-            founded = True
-            break
-    # print(founded)
-    if founded == False:
-        try: #Détecte si le fichier a été suprimé, ou si le fichier ne fini pas par l'extension .data
-            with open(f"levels/{fichiers[b]}.data", "rb") as lvl:
-                get_record = pickle.Unpickler(lvl)
-                try: #Detecte si le fichier n'est pas une liste
-                    lvl_data = get_record.load()
-                except:
-                    pass
-        except:
-            pass
-        try:
-            if lvl_data[0] != "MapApprovedCertificate": #Vérifie que la map détient bien a l'occurence 0 le certificat "MapApprovedCertificate" qui permet de s'assurer que ce fichier est lisible en tant que map de jeu
-                pass #Signale l'absence du certificat et retourne l'erreur comme quoi le fichier est corrompu
-            else:
-                check = True
-                # print(f"Valid file : {fichiers[b]}")
-        except:
-            pass #Si la vérification du certificat echoue
-            
-        if check == True:
-            maplimit = [lvl_data[1], lvl_data[2]] #Stocke la taille de la map
-            mapcontent = lvl_data[4:] #Stocke les élement de la map
-            temp = []
-            for i in range(len(mapcontent)): #vérifie que la liste ne contient pas d'élément qui dépasse de la carte, et les retire le cas echeant
-                if mapcontent[i][1] <= maplimit[0] and mapcontent[i][2] <= maplimit[1]:
-                    temp.append(mapcontent[i])
-            mapcontent = [] #trie et rempli les cases n'ayant pas été référencé par du sol
-            for i in range(maplimit[1]+1):
-                for k in range(maplimit[0]+1):
-                    block_exist = False
-                    for a in range(len(temp)):
-                        if temp[a] == [temp[a][0], k, i]:
-                            mapcontent.append(temp[a])
-                            block_exist = True
-                            break
-                    if block_exist == False:
-                        mapcontent.append([0, k, i])
-            if 1/(maplimit[0]+1) < 1/(maplimit[1]+1):
-                blockscale = 32*(maplimit[0]+1)
-                centeringmapx = 0
-                centeringmapy = int((32*(maplimit[0]+1))/2-(32*(maplimit[1]+1))/2)
-            else:
-                blockscale = 32*(maplimit[1]+1)
-                centeringmapx = int((32*(maplimit[1]+1))/2-(32*(maplimit[0]+1))/2)
-                centeringmapy = 0
-            images = [Image.open(x) for x in ["img/map/ground.png", "img/map/block.png", "img/map/break_block.png", "img/map/wall.png"]]
-            line = []
-            total_width = blockscale
-            max_height = 32
-            for i in range(maplimit[1]+1):
-                new_im = Image.new('RGB', (total_width, max_height))
-                x_offset = centeringmapx
-                for k in range(maplimit[0]+1):
-                    # print(mapcontent[k])
-                    new_im.paste(images[mapcontent[i*(maplimit[0]+1)+k][0]], (int(x_offset),0))
-                    x_offset += 32
-                line.append(new_im)
-
-            max_height = blockscale
-            new_im = Image.new('RGB', (total_width, max_height))
-            y_offset = centeringmapy
-            for i in range(len(line)):
-                new_im.paste(line[i], (0,int(y_offset)))
-                y_offset += 32
-
-            new_im.save(f"img/temp/mini_map/{fichiers[b]}_cache.png")
-            tempfichiers.append(fichiers[b])
-
-
-fichiers = tempfichiers
 
 
 md = mapdisplayer.Mapdislayer(res)
@@ -253,14 +165,14 @@ clock = pygame.time.Clock()
 
 pygame.display.set_caption("BonBeurreMan") # Renommer l'intitulé de la fenêtre
 
-
+ctypes.windll.user32.SetProcessDPIAware()
 window_surface = pygame.display.set_mode(res)
 
 
 #Chargement des polices d'écritures
-fps_text = pygame.font.Font(join("fonts", "VCR_OSD_MONO_1.ttf"), round(res_adaptation(33))) # Autres
-text_40a = pygame.font.Font(join("fonts", "arialbd.ttf"), round(res_adaptation(60)))
-text_150a = pygame.font.Font(join("fonts", "arialbd.ttf"), round(res_adaptation(150)))
+fps_text = pygame.font.Font(f"{script_path}/fonts/VCR_OSD_MONO_1.ttf", round(res_adaptation(33))) # Autres
+text_40a = pygame.font.Font(f"{script_path}/fonts/arialbd.ttf", round(res_adaptation(60)))
+text_150a = pygame.font.Font(f"{script_path}/fonts/arialbd.ttf", round(res_adaptation(150)))
 
 window_surface.blit(text_150a.render("Chargement...", True, white), res_pos(450,425))
 pygame.display.flip()
@@ -276,24 +188,24 @@ a.set_alpha(128)
 a.fill((0, 0, 0))      
 
 for i in range(len(fichiers)):
-    minimapimg = pygame.image.load(f"img/temp/mini_map/{fichiers[i]}_cache.png").convert_alpha()
+    minimapimg = pygame.image.load(f"{script_path}/img/temp/mini_map/{fichiers[i]}_cache.png").convert_alpha()
     minimapimg = pygame.transform.smoothscale(minimapimg, res_pos(265,265))
     minimap_list.append(minimapimg)
 
-warn = pygame.image.load(f"img/ui/warn.png").convert_alpha() #Fonction pour importer l'image
+warn = pygame.image.load(f"{script_path}/img/ui/warn.png").convert_alpha() #Fonction pour importer l'image
 warn = pygame.transform.smoothscale(warn, res_pos(220,200)) #N'utiliser pas smooth scale sur une pixel art car ca le rendrait flou
 # warn = pygame.transform.scale(warn, res_pos(220,200)) #Fonction pour la scale a la résolution d'affichage
 
-left_arrow = pygame.image.load("img/ui/left_arrow.png").convert_alpha()
+left_arrow = pygame.image.load(f"{script_path}/img/ui/left_arrow.png").convert_alpha()
 left_arrow = pygame.transform.smoothscale(left_arrow, res_pos(95,180))
 
-right_arrow = pygame.image.load("img/ui/right_arrow.png").convert_alpha()
+right_arrow = pygame.image.load(f"{script_path}/img/ui/right_arrow.png").convert_alpha()
 right_arrow = pygame.transform.smoothscale(right_arrow, res_pos(95,180))
 
-ground = pygame.image.load("img/map/ground.png").convert_alpha()
-block = pygame.image.load("img/map/block.png").convert_alpha()
-break_block = pygame.image.load("img/map/break_block.png").convert_alpha()
-wall = pygame.image.load("img/map/wall.png").convert_alpha()
+ground = pygame.image.load(f"{script_path}/img/map/ground.png").convert_alpha()
+block = pygame.image.load(f"{script_path}/img/map/block.png").convert_alpha()
+break_block = pygame.image.load(f"{script_path}/img/map/break_block.png").convert_alpha()
+wall = pygame.image.load(f"{script_path}/img/map/wall.png").convert_alpha()
 
 
 
@@ -351,7 +263,7 @@ while launched: # Pour fermer la fenêtre
         while i <= k+4: #Affiche la selection des niveaux
             if i+1 > len(fichiers):
                 break
-            cache = (160+i*325-k*325)+(level_slide*frame_compensation)
+            cache = (160+i*325-k*325)+level_slide
             window_surface.blit(minimap_list[round(i)], res_pos(cache, 300))
             window_surface.blit(text_40a.render(fichiers[round(i)], True, white), res_pos(cache, 610))
             if collision_rect(cache, 300, 265, 400)[1] == True: #Si un niveau est activé
@@ -359,7 +271,7 @@ while launched: # Pour fermer la fenêtre
                 window_surface.fill(black)
                 window_surface.blit(text_150a.render("Chargement...", True, white), res_pos(450,425))
                 pygame.display.flip()
-                result = md.load(fichiers[i], res, pygame, Image, ground, block, break_block, wall) #Chargement du niveau selectionné
+                result = md.load(fichiers[i], res, pygame, Image, script_path, Unpickler, ground, block, break_block, wall) #Chargement du niveau selectionné
                 if result == "Invalid extension" or result == "Corrupted map":
                     menu = 10
                 else:
@@ -373,7 +285,7 @@ while launched: # Pour fermer la fenêtre
                 level_slide = 200
                 mouse_click_left = False
                 arrows_slide = [arrows_slide[0], 0]
-            elif arrows[0] == True and arrows_slide[1]*frame_compensation < 25:
+            elif arrows[0] == True and arrows_slide[1] < 25:
                 arrows_slide = [arrows_slide[0], arrows_slide[1]+arrows_slide_move]
             elif arrows[0] == False:
                 arrows_slide = [arrows_slide[0], 0]
