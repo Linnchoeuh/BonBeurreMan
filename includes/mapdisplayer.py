@@ -1,5 +1,4 @@
 import pickle
-from os import system
 
 class Mapdislayer:
     def __init__(self, res):
@@ -17,11 +16,11 @@ class Mapdislayer:
     def res_pos(self, spacex = 0, spacey = 0): # Permet de positionner un élement au meme endroit peu importe la résolution d'affichage
         return round(spacex * self.res[0]/1920) , round(spacey * self.res[1]/1080)
 
-    def load(self, file_name, res, pygame, Image, ground, block, break_block, wall):
+    def load(self, file_name, res, pygame, Image, script_path, Unpickler, ground, block, break_block, wall):
         #Verifie que le fichier est utilisable
         try: #Détecte si le fichier a été suprimé, ou si le fichier ne fini pas par l'extension .data
-            with open(f"levels/{file_name}.data", "rb") as lvl:
-                get_record = pickle.Unpickler(lvl)
+            with open(f"{script_path}/levels/{file_name}.data", "rb") as lvl:
+                get_record = Unpickler(lvl)
                 try: #Detecte si le fichier n'est pas une liste
                     lvl_data = get_record.load()
                 except:
@@ -29,7 +28,7 @@ class Mapdislayer:
         except:
             return "Invalid extension" 
         try:
-            if lvl_data[0] != "MapApprovedCertificate": #Vérifie que la map détient bien a l'ocurence 0 le certificat "MapApprovedCertificate" qui permet de s'assurer que ce fichier est lisible en tant que map de jeu
+            if lvl_data[0] != "MapApprovedCertificate": #Vérifie que la map détient bien a l'occurence 0 le certificat "MapApprovedCertificate" qui permet de s'assurer que ce fichier est lisible en tant que map de jeu
                 return "Corrupted map" #Signale l'absence du certificat et retourne l'erreur comme quoi le fichier est corrompu
         except:
             return "Corrupted map" #Si la vérification du certificat echoue
@@ -72,7 +71,7 @@ class Mapdislayer:
                 self.collisionsmap.append(2)
             else:
                 self.collisionsmap.append(0)
-        # print(self.collisionsmap)
+        print(self.collisionsmap)
 
         temp = []
         for i in range(len(self.mapcontent)):
@@ -80,7 +79,7 @@ class Mapdislayer:
                 temp.append([0, (self.centeringmapx+self.blockscale*self.mapcontent[i][1], self.centeringmapy+self.blockscale*self.mapcontent[i][2])])
             # elif self.mapcontent[i][0] == 4:
             #     self.mapcontent.append([1, (self.centeringmapx+self.blockscale*self.mapcontent[i][1], self.centeringmapy+self.blockscale*self.mapcontent[i][2])])
-        images = [Image.open(x) for x in ["img/map/ground.png", 'img/map/block.png', 'img/map/wall.png']]
+        images = [Image.open(x) for x in [f"{script_path}/img/map/ground.png", f"{script_path}/img/map/block.png", f"{script_path}/img/map/wall.png"]]
         line = []
         total_width = (self.maplimit[0]+1)*32
         max_height = 32
@@ -104,9 +103,9 @@ class Mapdislayer:
             new_im.paste(line[i], (0,y_offset))
             y_offset += 32
 
-        new_im.save("img/temp/cache.png")
+        new_im.save(f"{script_path}/img/temp/cache.png")
         
-        self.bg_map = pygame.image.load("img/temp/cache.png")
+        self.bg_map = pygame.image.load(f"{script_path}/img/temp/cache.png")
         self.bg_map = pygame.transform.scale(self.bg_map, (int(total_width*(self.blockscale/32)), int(max_height*(self.blockscale/32))))
         images = 0
         new_im = 0
