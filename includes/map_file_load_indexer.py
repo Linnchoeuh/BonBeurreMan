@@ -2,7 +2,6 @@ def map_file_indexer(script_path, listdir, Image, Unpickler):
     script_path = script_path.replace("\\", "/")
 
     fichiers = listdir(f"{script_path}/levels") #Liste les niveaux stocké dans le dossier levels, et seulement ceux qui contiennent .data dans leur nom
-    # print(listdir("levels"))
     temp = []
     for i in range(len(fichiers)):
         if fichiers[i].endswith(".data") == True:
@@ -41,12 +40,14 @@ def map_file_indexer(script_path, listdir, Image, Unpickler):
                     pass #Signale l'absence du certificat et retourne l'erreur comme quoi le fichier est corrompu
                 else:
                     check = True
-                    # print(f"Valid file : {fichiers[b]}")
             except:
                 pass #Si la vérification du certificat echoue
 
             if check == True:
                 maplimit = [lvl_data[1], lvl_data[2]] #Stocke la taille de la map
+                print("ui")
+                print(lvl_data[0])
+                print(maplimit)
                 mapcontent = lvl_data[4:] #Stocke les élement de la map
                 temp = []
                 for i in range(len(mapcontent)): #vérifie que la liste ne contient pas d'élément qui dépasse de la carte, et les retire le cas echeant
@@ -92,5 +93,4 @@ def map_file_indexer(script_path, listdir, Image, Unpickler):
                 new_im.save(f"{script_path}/img/temp/mini_map/{fichiers[b]}_cache.png")
                 tempfichiers.append(fichiers[b])
     
-    print(tempfichiers)
     return tempfichiers

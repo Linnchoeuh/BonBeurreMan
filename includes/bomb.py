@@ -12,10 +12,20 @@ class Bomb(): # Création de la casse de la bombe
         self.timer = 190
 
     def poseBomb(self, surface, bomb_index):
+        del_bomb_list = []
         if bomb_index != []:
             for i in range(len(bomb_index)):   
-                
-                surface.blit(self.sprite, [self.x, self.y])
+                surface.blit(self.sprite, [bomb_index[i][0], bomb_index[i][1]])
+                bomb_index[i][2] -= 1
+                if bomb_index[i][2] <= 0:
+                    del_bomb_list.append(i)
+        if del_bomb_list != []:
+            for i in range(len(del_bomb_list)):
+                del bomb_index[del_bomb_list[i]]
+
+        
+        return bomb_index
+
 
     def explosion(self, dt):
         if self.timer > 10:

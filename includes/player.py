@@ -34,21 +34,14 @@ class Player():
         self.sprite = pygame.transform.scale(self.sprite, (blockscale,blockscale))
         self.maplimit = [maplimit[0],maplimit[1]]
         self.centeringmap = [centeringmapx, centeringmapy]     
-        print(self.maplimit)   
+        # print(self.maplimit)   
     
     
     def player_display(self, window_surface): # Fonction qui fait spawn le joueur
         window_surface.blit(self.sprite, (self.x,self.y))
 
     def set_bomb(self, surface): # Fonction qui fait spawn la bombe
-        
-        # if len(self.bomb_list) < self.max_bomb:
-        #     self.bomb_list.append("yep")
-        #     newBomb = bomb.Bomb("img/power_up/bombUp.png", self.x, self.y, 32, 32, self.power)
-        #     newBomb.poseBomb(surface)
-        #     newBomb.explosion(self.frame_compensation)            
-        # else:
-        #     pass
+        return [self.x, self.y, 100]
 
     # Movement du joueur
     def movement(self, dico_kb__inputs_bool, collisions, lag):
@@ -58,7 +51,7 @@ class Player():
         if dico_kb__inputs_bool["z"] and lag <= 0 and collisions[(int((self.maplimit[0]+1)*(((self.y-self.unite)-self.centeringmap[1])/self.unite)+((self.x-self.centeringmap[0])/self.unite)))] == 0:
             self.y -= self.unite
             lag = 5
-        
+        bite
         #Bouge vers le bas
         if dico_kb__inputs_bool["s"] and lag <= 0 and collisions[(int((self.maplimit[0]+1)*(((self.y+self.unite)-self.centeringmap[1])/self.unite)+((self.x-self.centeringmap[0])/self.unite)))] == 0:
             self.y += self.unite

@@ -31,7 +31,7 @@ import includes.map_file_load_indexer as map_indexer
 import includes.mapeditor as mapeditor
 import ctypes
 from os import listdir
-from os.path import isfile, join, dirname, realpath
+from os.path import dirname, realpath
 from pickle import Pickler, Unpickler
 
 
@@ -87,6 +87,7 @@ script_path = script_path.replace("\\", "/")
 fichiers = map_indexer.map_file_indexer(script_path, listdir, Image, Unpickler)
 editor = mapeditor.MapEditor(res)
 minimap_list = []
+
 
 
 md = mapdisplayer.Mapdislayer(res)
@@ -204,6 +205,10 @@ left_arrow = pygame.transform.smoothscale(left_arrow, res_pos(95,180))
 right_arrow = pygame.image.load(f"{script_path}/img/ui/right_arrow.png").convert_alpha()
 right_arrow = pygame.transform.smoothscale(right_arrow, res_pos(95,180))
 
+beurre = pygame.image.load(f"{script_path}/img/ui/beurre.png").convert_alpha()
+beurre = pygame.transform.smoothscale(beurre, res_pos(400,267))
+beurre2 = pygame.transform.smoothscale(beurre, res_pos(1920, 1080))
+
 ground = pygame.image.load(f"{script_path}/img/map/ground.png").convert_alpha()
 block = pygame.image.load(f"{script_path}/img/map/block.png").convert_alpha()
 break_block = pygame.image.load(f"{script_path}/img/map/break_block.png").convert_alpha()
@@ -233,18 +238,23 @@ while launched: # Pour fermer la fenêtre
             temp_menu = 0
             load_menu = 0
         
-        if collision_rect(810, 225, 300, 150, "Jouer")[1] == True and temp_menu == 0: #Passe sur le menu de selection de niveau
+        window_surface.blit(text_150a.render("BonBeurreMan", True, white), res_pos(420,0))
+
+        if collision_rect(810, 300, 300, 150, "Jouer")[1] == True and temp_menu == 0: #Passe sur le menu de selection de niveau
             menu = 1
             fade_var = [0, 1]
             level_select_offset = 0
-        if collision_rect(810, 425, 300, 150, "Options")[1] == True and temp_menu == 0: #Passe sur les options
+        if collision_rect(810, 500, 300, 150, "Options")[1] == True and temp_menu == 0: #Passe sur les options
             menu = 2
             fade_var = [0, 1]
-        if collision_rect(810, 625, 300, 150, "Editeur de cartes")[1] == True and temp_menu == 0: #Passe sur éditeur de cartes
-            menu = 4
-            fade_var = [0, 1]
-        if collision_rect(810, 825, 300, 150, "Quitter")[1] == True and temp_menu == 0: #Ferme le jeu
+        if collision_rect(810, 700, 300, 150, "Editeur de cartes")[1] == True and temp_menu == 0: #Passe sur éditeur de cartes
+            # menu = 4
+            # fade_var = [0, 1]
+            pass
+        if collision_rect(810, 900, 300, 150, "Quitter")[1] == True and temp_menu == 0: #Ferme le jeu
             launched = False
+        
+        window_surface.blit(beurre, res_pos(1450, 780))
     
         fade_var, menu, temp_menu = fade_in(fade_var, menu, temp_menu, 0)
 
@@ -260,6 +270,7 @@ while launched: # Pour fermer la fenêtre
             pause = False
             load_menu = 1
         
+        # window_surface.blit(beurre2, res_pos(0,0))
         window_surface.blit(text_150a.render("Choisissez votre niveau", True, white), res_pos(60,0))
 
         k = i = level_select_offset*5
@@ -324,7 +335,7 @@ while launched: # Pour fermer la fenêtre
                 pass
             if collision_rect(490, 975, 675, 105, "Connexion multi local")[1] == True:
                 pass
-
+        
         fade_var, menu, temp_menu = fade_in(fade_var, menu, temp_menu, 1)
             
 
@@ -368,7 +379,7 @@ while launched: # Pour fermer la fenêtre
         collisions = md.collisions_updater([collisition_modification])
         md.displayer(window_surface, warn)
         
-        # joueur1 = player.Player(joueur_sprite, 10, 100, 32, 32, 5)
+        bbomb.poseBomb(window_surface, bomb_data)
         player1.player_display(window_surface)
         lag = player1.movement(keyboard_input, collisions, lag)
 
