@@ -23,15 +23,14 @@ except:
     input("Pip à été mis à jour et pil a été installé.\nSi le programme ne se lance toujours pas, faite manuellement les installations\nPour installer voici la marche à suivre:\nPremièrement faites 'windows+r', tapez 'cmd' et appuyer sur entré.\n Nous allons d'abbord vérifier que pip est à jour, entrez la commande si dessous dans l'invite de commande que vous avez ouvert:\npython -m pip install --upgrade pip\nAttendez la fin de l'instalation et entrez ensuite cette commande pour installer pygame:\npip install pillow\n Une fois l'installation terminé vous devriez pouvoir lancer correctement ce programme\n Appuyez sur entrée pour continuer.")
     from PIL import Image
 
-# import includes.player as player
+import includes.player as player
 import includes.bomb as bomb
 import includes.mapdisplayer as mapdisplayer
 import includes.keyboard_input_detect as keyboard_input_detect
 import includes.map_file_load_indexer as map_indexer
-import includes.mapeditor as mapeditor
 import ctypes
 from os import listdir
-from os.path import dirname, realpath
+from os.path import isfile, join, dirname, realpath
 from pickle import Pickler, Unpickler
 
 
@@ -40,11 +39,8 @@ from pickle import Pickler, Unpickler
 print("Jeu réalisé par Tony, Jean-Pierre, Kimi et Lenny")
 print("Démarage de BonBeurreMan...")
 # Definitions des variables -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-script_path = dirname(realpath(__file__))
-script_path = script_path.replace("\\", "/")
-
-# player1 = player.Player(f"{script_path}/img/power_up/powerUp.png", 10, 100, 32, 32, 5)
-# bbomb = bomb.Bomb(f"{script_path}/img/power_up/bombUp.png", player1.x, player1.y, 32, 32)
+player1 = player.Player("img/player_stuff/perso.png", 10, 100, 32, 32, 5)
+bbomb = bomb.Bomb("img/power_up/bombUp.png", player1.x, player1.y, 32, 32)
 
 red = (255, 0, 0) # Quelque variable de couleur prédéfini
 green = (0, 255, 0)
@@ -63,7 +59,7 @@ res = [1280, 720] # Definition de la résolution d'affichage
 mx = 0 # Definition de la position x de la souris
 my = 0 # Definition de la position y de la souris
 mousepress = [0,0,0] # Permet d'acceder au input de la souris, sachant que mousepress[0] = click gauche, mousepress[1] = click molette, mousepress[2] = click droit
-devmode = True
+devmode = False
 menu = 0 #Menu d'entrée
 load_menu = 0 #Variable permettant de charger a la première frame du menu actif
 
@@ -84,14 +80,14 @@ keyboard_input = {
     "ESCAPE" : False
 } #Dictionnaire des touches pressables
 
-
+script_path = dirname(realpath(__file__))
+script_path = script_path.replace("\\", "/")
 
 fichiers = map_indexer.map_file_indexer(script_path, listdir, Image, Unpickler)
 minimap_list = []
 
 
 md = mapdisplayer.Mapdislayer(res)
-editor = mapeditor.MapEditor(res)
 result = "ok"
 level_select_offset = 0
 pause = False
@@ -210,7 +206,7 @@ ground = pygame.image.load(f"{script_path}/img/map/ground.png").convert_alpha()
 block = pygame.image.load(f"{script_path}/img/map/block.png").convert_alpha()
 break_block = pygame.image.load(f"{script_path}/img/map/break_block.png").convert_alpha()
 wall = pygame.image.load(f"{script_path}/img/map/wall.png").convert_alpha()
-
+joueur_sprite = pygame.image.load(f"{script_path}/img/player_stuff/perso.png").convert_alpha()
 
 
 
@@ -235,15 +231,12 @@ while launched: # Pour fermer la fenêtre
             temp_menu = 0
             load_menu = 0
         
-        if collision_rect(810, 225, 300, 150, "Jouer")[1] == True and temp_menu == 0: #Passe sur le menu de selection de niveau
+        if collision_rect(810, 375, 300, 150, "Jouer")[1] == True and temp_menu == 0: #Passe sur le menu de selection de niveau
             menu = 1
             fade_var = [0, 1]
             level_select_offset = 0
-        if collision_rect(810, 425, 300, 150, "Options")[1] == True and temp_menu == 0: #Passe sur les options
+        if collision_rect(810, 600, 300, 150, "Options")[1] == True and temp_menu == 0: #Passe sur les options
             menu = 2
-            fade_var = [0, 1]
-        if collision_rect(810, 625, 300, 150, "Editeur de cartes")[1] == True and temp_menu == 0: #Passe sur éditeur de cartes
-            menu = 4
             fade_var = [0, 1]
         if collision_rect(810, 825, 300, 150, "Quitter")[1] == True and temp_menu == 0: #Ferme le jeu
             launched = False
@@ -366,7 +359,11 @@ while launched: # Pour fermer la fenêtre
         
         collisions = md.collisions_updater([collisition_modification])
         md.displayer(window_surface, warn)
-        #place ton affichage de player ici
+        
+        joueur1 = player.Player(joueur_sprite, 10, 100, 32, 32, 5)
+        joueur1.spawn_player(window_surface)
+
+        joueur1.movement(keyboard_input)
 
 
 
@@ -376,9 +373,12 @@ while launched: # Pour fermer la fenêtre
 
 
 
-
-
-
+        if bb == True:     # Normalement il suffit de prendre ca pour poser des bombes, mais c'est cursed (je crois)       
+            if bbomb.explosion(dt) > 0:
+                bbomb.poseBomb(player1, window_surface)
+            else:
+                bb = False        
+        
         if escape_released == True: #Activation de la pause
             if pause == False and keyboard_input["ESCAPE"] == True:
                 escape_released = False
@@ -403,91 +403,7 @@ while launched: # Pour fermer la fenêtre
         
         fade_var, menu, temp_menu = fade_in(fade_var, menu, temp_menu, 3)
 
-    if menu == 4: #Selection
-        if load_menu != 4: # Mettez ici les éléments a charger une seule fois
-            mouse_click_left = False
-            left_arrow_rect = left_arrow.get_rect(topleft=res_pos(25,350))
-            right_arrow_rect = right_arrow.get_rect(topleft=res_pos(1800,350))
-            level_slide = 0
-            arrows = (False, False)
-            arrows_slide = [0,0]
-            arrows_slide_move = 15
-            pause = False
-            load_menu = 4
-        
-        window_surface.blit(text_150a.render("Choisissez votre niveau", True, white), res_pos(60,0))
-
-        k = i = level_select_offset*5
-        if i < 0:
-            i = 0
-        while i <= k+4: #Affiche la selection des niveaux
-            if i+1 > len(fichiers):
-                break
-            cache = (160+i*325-k*325)+level_slide
-            window_surface.blit(minimap_list[round(i)], res_pos(cache, 300))
-            window_surface.blit(text_40a.render(fichiers[round(i)], True, white), res_pos(cache, 610))
-            if collision_rect(cache, 300, 265, 400)[1] == True: #Si un niveau est activé
-                fade_var = [0, 0]
-                window_surface.fill(black)
-                window_surface.blit(text_150a.render("Chargement...", True, white), res_pos(450,425))
-                pygame.display.flip()
-                result = editor.load(fichiers[i], res, pygame, script_path, Unpickler, ground, block, break_block, wall) #Chargement du niveau selectionné
-                if result == "Invalid extension" or result == "Corrupted map":
-                    menu = 10
-                else:
-                    menu = 5
-            i += 1
-        
-        if level_select_offset*5 < len(fichiers)-5:
-            arrows = collision_rect_texture(1800+arrows_slide[1], 360, right_arrow, right_arrow_rect) #Fleche droite
-            if arrows[1] == True:
-                level_select_offset += 1
-                level_slide = 200
-                mouse_click_left = False
-                arrows_slide = [arrows_slide[0], 0]
-            elif arrows[0] == True and arrows_slide[1] < 25:
-                arrows_slide = [arrows_slide[0], arrows_slide[1]+arrows_slide_move]
-            elif arrows[0] == False:
-                arrows_slide = [arrows_slide[0], 0]
-            else:
-                arrows_slide = [arrows_slide[0], 25]
-        if level_select_offset*5 >= 4:
-            arrows = collision_rect_texture(25-arrows_slide[0], 360, left_arrow, left_arrow_rect) #Fleche gauche
-            if arrows[1] == True:
-                level_select_offset -= 1
-                level_slide = -200
-                mouse_click_left = False
-                arrows_slide = [0, arrows_slide[1]]
-            elif arrows[0] == True and arrows_slide[0] < 25:
-                arrows_slide = [arrows_slide[0]+arrows_slide_move, arrows_slide[1]]
-            elif arrows[0] == False:
-                arrows_slide = [0, arrows_slide[1]]
-            else:
-                arrows_slide = [25, arrows_slide[1]]
-
-
-        if level_slide < 0:
-            level_slide += 50
-        elif level_slide > 0:
-            level_slide -= 50
-
-        if collision_rect(0, 975, 300, 105, "Retour")[1] == True:
-            menu = 0
-            fade_var = [0, 1]
-        if collision_rect(1520, 975, 400, 105, "Nouveau")[1] == True:
-            menu = 5
-            fade_var = [0, 1]
-
-        fade_var, menu, temp_menu = fade_in(fade_var, menu, temp_menu, 4)
-
-    if menu == 5: #Editeur de carte spécialement pour kimi <3
-        if load_menu != 5: # Mettez ici les éléments a charger une seule fois
-            mouse_click_left = False
-            load_menu = 5
-
-        editor.displayer(window_surface)
-
-        fade_var, menu, temp_menu = fade_in(fade_var, menu, temp_menu, 5)
+                
 
     if menu == 10:
         window_surface.blit(warn, res_pos(850,100))
@@ -516,4 +432,3 @@ while launched: # Pour fermer la fenêtre
     pygame.display.flip() # Met a jour l'affichage
     dt = clock.tick(60)/1000 # Permet de limiter la framerate a 60fps
     frame_compensation = dt/(1/60)
-    #player1.vole_frame_compensation(frame_compensation)

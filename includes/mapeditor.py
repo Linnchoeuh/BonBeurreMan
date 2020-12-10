@@ -68,7 +68,8 @@ class MapEditor():
         for i in range(len(self.mapcontent)):
             window_surface.blit(self.texture[self.mapcontent[i][0]], self.mapcontent[i][1])
 
-    
+    def mapmodifier(self, mx, my):
+        pass
 
 
 """level = ["MapApprovedCertificate", 29, 29, [[1,1],[28,28],[28,1],[1,28],[15,1],[28,15],[15,28],[1,15]],   #Taille de la map x, Taille de la map y, positions d'apparition de chaque joueur
