@@ -7,7 +7,7 @@ class MapEditor():
         self.centeringmapy = 0
         self.blockscale = 0
         self.res = res
-        self.texture = []<
+        self.texture = []
         self.bg_map = 0
         self.collisionsmap = [] #0 pas de collisions, 1 collisions, 2 block cassable, 3 joueur, 4 bomb, 5 power up
 
@@ -70,7 +70,10 @@ class MapEditor():
 
     def mapmodifier(self, mx, my):
         pass
+       
 
+
+    
 
 """level = ["MapApprovedCertificate", 29, 29, [[1,1],[28,28],[28,1],[1,28],[15,1],[28,15],[15,28],[1,15]],   #Taille de la map x, Taille de la map y, positions d'apparition de chaque joueur
 #Contour de la map
@@ -198,7 +201,7 @@ class MapEditor():
 
 name = "oui"
 with open(f"levels/{name}.data", "wb") as lvl:
-    record = pickle.Pickler(lvl)
+    record = Pickler(lvl)
     record.dump(level)
 
 print("File created with success")"""
