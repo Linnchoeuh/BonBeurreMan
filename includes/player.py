@@ -29,7 +29,6 @@ class Player():
     def vole_frame_compensation(machin,self): # C'est pour compenser les lags
         self.frame_compensation = machin
 
-
     def spawn_player(self, window_surface): # Fonction qui fait spawn le joueur
         return window_surface.blit(self.sprite, self.position_actuelle)
 
