@@ -26,7 +26,7 @@ class Player():
         self.position_preced = self.position_actuelle
         self.position_nouv = [self.x,self.y] # Modif [self.x + preshot_x, self.y + preshot_y]
         
-    def vole_frame_compensation(machin,self): # C'est pour compenser les lags
+    def vole_frame_compensation(self, machin): # C'est pour compenser les lags
         self.frame_compensation = machin
 
     def spawn_player(self, window_surface): # Fonction qui fait spawn le joueur

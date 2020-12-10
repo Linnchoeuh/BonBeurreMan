@@ -7,7 +7,7 @@ class MapEditor():
         self.centeringmapy = 0
         self.blockscale = 0
         self.res = res
-        self.texture = []
+        self.texture = []<
         self.bg_map = 0
         self.collisionsmap = [] #0 pas de collisions, 1 collisions, 2 block cassable, 3 joueur, 4 bomb, 5 power up
 
