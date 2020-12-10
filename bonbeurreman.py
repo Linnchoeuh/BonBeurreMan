@@ -363,7 +363,7 @@ while launched: # Pour fermer la fenêtre
         joueur1 = player.Player(joueur_sprite, 10, 100, 32, 32, 5)
         joueur1.spawn_player(window_surface)
         joueur1.movement(keyboard_input)
-        
+
 
 
 
