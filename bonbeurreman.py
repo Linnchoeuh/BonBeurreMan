@@ -75,7 +75,8 @@ keyboard_input = {
     "ESCAPE" : False
 } #Dictionnaire des touches pressables
 
-fichiers = [f for f in listdir("levels") if isfile(join("levels", f))] #Liste les niveaux stocké dans le dossier levels, et seulement ceux qui contiennent .data dans leur nom
+fichiers = listdir("levels") #Liste les niveaux stocké dans le dossier levels, et seulement ceux qui contiennent .data dans leur nom
+# print(listdir("levels"))
 temp = []
 for i in range(len(fichiers)):
     if fichiers[i].find(".data") != -1:
@@ -231,15 +232,15 @@ def fade_in(fade, fmenu, ftemp_menu, initial_menu):
         fmenu = initial_menu
     if fade[1] == 1:
         if fade[0] + 20 < 255:
-            s.set_alpha(fade[0] + 20)
-            fade[0] += 20
+            s.set_alpha(fade[0] + 20*frame_compensation)
+            fade[0] += 20*frame_compensation
         else:   
             s.set_alpha(255)
             fade = [255, -1]
     if fade[1] == -1 and fade[0] != 0 and fmenu == ftemp_menu:
         if fade[0] - 20 > 0:
-            s.set_alpha(fade[0] - 20)
-            fade[0] -= 20   
+            s.set_alpha(fade[0] - 20*frame_compensation)
+            fade[0] -= 20*frame_compensation  
         else:
             s.set_alpha(0)
             fade = [0, 0]
@@ -269,6 +270,10 @@ pygame.display.flip()
 s = pygame.Surface(res)  # the size of your rect
 s.set_alpha(0)           # alpha level
 s.fill((0, 0, 0))        # this fills the entire surface
+
+a = pygame.Surface(res)
+a.set_alpha(128)         
+a.fill((0, 0, 0))      
 
 for i in range(len(fichiers)):
     minimapimg = pygame.image.load(f"img/temp/mini_map/{fichiers[i]}_cache.png").convert_alpha()
@@ -335,6 +340,7 @@ while launched: # Pour fermer la fenêtre
             arrows = (False, False)
             arrows_slide = [0,0]
             arrows_slide_move = 15
+            pause = False
             load_menu = 1
         
         window_surface.blit(text_150a.render("Choisissez votre niveau", True, white), res_pos(60,0))
@@ -345,7 +351,7 @@ while launched: # Pour fermer la fenêtre
         while i <= k+4: #Affiche la selection des niveaux
             if i+1 > len(fichiers):
                 break
-            cache = (160+i*325-k*325)+level_slide
+            cache = (160+i*325-k*325)+(level_slide*frame_compensation)
             window_surface.blit(minimap_list[round(i)], res_pos(cache, 300))
             window_surface.blit(text_40a.render(fichiers[round(i)], True, white), res_pos(cache, 610))
             if collision_rect(cache, 300, 265, 400)[1] == True: #Si un niveau est activé
@@ -367,7 +373,7 @@ while launched: # Pour fermer la fenêtre
                 level_slide = 200
                 mouse_click_left = False
                 arrows_slide = [arrows_slide[0], 0]
-            elif arrows[0] == True and arrows_slide[1] < 25:
+            elif arrows[0] == True and arrows_slide[1]*frame_compensation < 25:
                 arrows_slide = [arrows_slide[0], arrows_slide[1]+arrows_slide_move]
             elif arrows[0] == False:
                 arrows_slide = [arrows_slide[0], 0]
@@ -463,14 +469,12 @@ while launched: # Pour fermer la fenêtre
             escape_released = True
 
         if pause == True:
-            s.set_alpha(128)
-            window_surface.blit(s, (0,0))    # (0,0) are the top-left coordinates
+            window_surface.blit(a, (0,0))    # (0,0) are the top-left coordinates
             window_surface.blit(text_150a.render("Pause", True, white), res_pos(720,0))
             if collision_rect(790, 500, 300, 105, "Continuer")[1] == True:
                 pause = False
             if collision_rect(530, 700, 825, 105, "Retour au choix des niveaux")[1] == True:
                 menu = 1
-                pause = False
                 fade_var = [0, 1]
         
         fade_var, menu, temp_menu = fade_in(fade_var, menu, temp_menu, 3)
@@ -503,3 +507,4 @@ while launched: # Pour fermer la fenêtre
     update_fps() # Affiche les fps
     pygame.display.flip() # Met a jour l'affichage
     dt = clock.tick(60)/1000 # Permet de limiter la framerate a 60fps
+    frame_compensation = dt/(1/60)
