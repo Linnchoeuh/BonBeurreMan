@@ -39,9 +39,11 @@ from pickle import Pickler, Unpickler
 
 print("Jeu réalisé par Tony, Jean-Pierre, Kimi et Lenny")
 print("Démarage de BonBeurreMan...")
+script_path = dirname(realpath(__file__))
+script_path = script_path.replace("\\", "/")
 # Definitions des variables -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-player1 = player.Player("img/player_stuff/perso.png", 10, 100, 32, 32, 5)
-bbomb = bomb.Bomb("img/power_up/bombUp.png", player1.x, player1.y, 32, 32)
+player1 = player.Player(f"{script_path}/img/player_stuff/perso.png", 10, 100, 32, 32, 5)
+bbomb = bomb.Bomb(f"{script_path}/img/bomb/bomb_pixel.png", player1.x, player1.y, f"{script_path}/img/bomb/explosion/explo1.png", f"{script_path}/img/bomb/explosion/explo2.png", f"{script_path}/img/bomb/explosion/explo3.png", f"{script_path}/img/bomb/explosion/explo4.png", f"{script_path}/img/bomb/explosion/explo5.png")
 
 red = (255, 0, 0) # Quelque variable de couleur prédéfini
 green = (0, 255, 0)
@@ -81,8 +83,7 @@ keyboard_input = {
     "ESCAPE" : False
 } #Dictionnaire des touches pressables
 
-script_path = dirname(realpath(__file__))
-script_path = script_path.replace("\\", "/")
+
 
 fichiers = map_indexer.map_file_indexer(script_path, listdir, Image, Unpickler)
 editor = mapeditor.MapEditor(res)
@@ -208,7 +209,7 @@ right_arrow = pygame.transform.smoothscale(right_arrow, res_pos(95,180))
 beurre = pygame.image.load(f"{script_path}/img/ui/beurre.png").convert_alpha()
 beurre = pygame.transform.smoothscale(beurre, res_pos(400,267))
 beurre2 = pygame.transform.smoothscale(beurre, res_pos(1920, 1080))
-
+# TODO : Changer les chemins des images avec les bons chemins du github
 ground = pygame.image.load(f"{script_path}/img/map/ground.png").convert_alpha()
 block = pygame.image.load(f"{script_path}/img/map/block.png").convert_alpha()
 break_block = pygame.image.load(f"{script_path}/img/map/break_block.png").convert_alpha()
@@ -370,21 +371,30 @@ while launched: # Pour fermer la fenêtre
             mouse_click_left = False
             collisions = md.collisions_updater([])
             player1.player_start(md.blockscale, md.playersspawns[0], md.centeringmapx, md.centeringmapy, md.maplimit)
-            load_menu = 3
+            bbomb.bomb_init(md.blockscale, md.centeringmapx, md.centeringmapy, md.maplimit)
+            release_space = True
             lag = 0
             bomb_data = []
+            explosion_data = []
+            load_menu = 3
         collisition_modification = []
 
         
-        collisions = md.collisions_updater([collisition_modification])
-        md.displayer(window_surface, warn)
+        if keyboard_input["SPACE"] == True and release_space == True: # Euh ouaip bonne chance :)
+            temp = player1.set_bomb()
+            if temp != "none":
+                bomb_data.append(temp)
+        # print(bomb_data, explosion_data)
         
-        bbomb.poseBomb(window_surface, bomb_data)
-        player1.player_display(window_surface)
-        lag = player1.movement(keyboard_input, collisions, lag)
-
-        if keyboard_input["SPACE"] == True: # Euh ouaip bonne chance :)
-            bomb_data.append(player1.set_bomb(window_surface)) 
+        
+        md.displayer(window_surface)
+        
+        bomb_data, explosion_data = bbomb.poseBomb(window_surface, bomb_data, explosion_data, frame_compensation)
+        explosion_data, collisition_modification = bbomb.explosion(window_surface, explosion_data, frame_compensation, collisions)
+        player1.player_display(window_surface, frame_compensation)
+        lag = player1.movement(keyboard_input, collisions, lag, frame_compensation)
+        # print(collisition_modification)
+        collisions = md.collisions_updater(collisition_modification)
         
         if escape_released == True: #Activation de la pause
             if pause == False and keyboard_input["ESCAPE"] == True:
@@ -398,6 +408,11 @@ while launched: # Pour fermer la fenêtre
             escape_released = False
         else:
             escape_released = True
+
+        if keyboard_input["SPACE"] == True:
+            release_space = False
+        else:
+            release_space = True
 
         if pause == True:
             window_surface.blit(a, (0,0))    # (0,0) are the top-left coordinates

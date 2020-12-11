@@ -24,9 +24,7 @@ class Player():
 
         self.look = direction
         self.frame_compensation = 0
-        
-    def vole_frame_compensation(self, machin): # C'est pour compenser les lags
-        self.frame_compensation = machin
+        self.cd = 0
 
     def player_start(self, blockscale, playersspawns, centeringmapx, centeringmapy, maplimit):
         self.unite = blockscale
@@ -37,21 +35,27 @@ class Player():
         # print(self.maplimit)   
     
     
-    def player_display(self, window_surface): # Fonction qui fait spawn le joueur
+    def player_display(self, window_surface, frame_compensation): # Fonction qui fait spawn le joueur
         window_surface.blit(self.sprite, (self.x,self.y))
+        if self.cd > 0:
+            self.cd -= 1*frame_compensation
 
-    def set_bomb(self, surface): # Fonction qui fait spawn la bombe
-        return [self.x, self.y, 100]
+    def set_bomb(self): # Fonction qui fait spawn la bombe
+        if self.cd <= 0:
+            self.cd = 100
+            return [self.x, self.y, 100]
+        return "none"
+        
 
     # Movement du joueur
-    def movement(self, dico_kb__inputs_bool, collisions, lag):
-        lag -= 1
+    def movement(self, dico_kb__inputs_bool, collisions, lag, frame_compensation):
+        lag -= 1*frame_compensation
         # (longueur map x + 1) * (position du joueur y - (décalage pour centrer la carte y / taille d'un bloc) + ((position du joueur x - décalage pour centrer la carte x) / taille d'un bloc))
         #Bouge vers le haut
         if dico_kb__inputs_bool["z"] and lag <= 0 and collisions[(int((self.maplimit[0]+1)*(((self.y-self.unite)-self.centeringmap[1])/self.unite)+((self.x-self.centeringmap[0])/self.unite)))] == 0:
             self.y -= self.unite
             lag = 5
-        bite
+        
         #Bouge vers le bas
         if dico_kb__inputs_bool["s"] and lag <= 0 and collisions[(int((self.maplimit[0]+1)*(((self.y+self.unite)-self.centeringmap[1])/self.unite)+((self.x-self.centeringmap[0])/self.unite)))] == 0:
             self.y += self.unite

@@ -71,7 +71,7 @@ class Mapdislayer:
                 self.collisionsmap.append(2)
             else:
                 self.collisionsmap.append(0)
-        print(self.collisionsmap)
+        # print(self.collisionsmap)
 
         temp = []
         for i in range(len(self.mapcontent)):
@@ -119,12 +119,22 @@ class Mapdislayer:
     # 2 = block breakable
     # 3 = wall
     # 4 = power-up
-    def displayer(self, window_surface, warn):
+    def displayer(self, window_surface):
         window_surface.blit(self.bg_map, (self.centeringmapx, self.centeringmapy))
-        for i in range(len(self.mapcontent)):
-            window_surface.blit(self.texture[self.mapcontent[i][0]], self.mapcontent[i][1])
+        if self.mapcontent != []:
+            for i in range(len(self.mapcontent)):
+                window_surface.blit(self.texture[self.mapcontent[i][0]], self.mapcontent[i][1])
     
     def collisions_updater(self, modification):
         if modification != []:
-            pass
+            for i in range(len(modification)):
+                # print(self.collisionsmap[modification[i][0]])
+                self.collisionsmap[modification[i][0]] = modification[i][1]
+                for a in range(len(self.mapcontent)):
+                    print(f"Compare {((modification[i][0]%(self.maplimit[0]+1))*self.blockscale+self.centeringmapx, (modification[i][0]//(self.maplimit[0]+1))*self.blockscale+self.centeringmapy)} | {self.mapcontent[a][1]}")
+                    if ((modification[i][0]%(self.maplimit[0]+1))*self.blockscale+self.centeringmapx, (modification[i][0]//(self.maplimit[0]+1))*self.blockscale+self.centeringmapy) == self.mapcontent[a][1]:
+                        del self.mapcontent[a]
+                        print("ok")
+                        break
+                        
         return self.collisionsmap
