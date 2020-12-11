@@ -369,29 +369,30 @@ while launched: # Pour fermer la fenêtre
             
         collisition_modification = []
  
+        if pause == False:
+            player1.movement(keyboard_input, collisions, frame_compensation)  
+            player2.movementp2(keyboard_input, collisions, frame_compensation)
         
-        if keyboard_input["SPACE"] == True and release_space == True: # Euh ouaip bonne chance :)
-            temp, collisition_modification = player1.set_bomb(collisition_modification)
-            # print(collisition_modification)
-            if temp != "none":
-                bomb_data.append(temp)
-        # print(bomb_data, explosion_data)
+            if keyboard_input["SPACE"] == True and release_space == True: # Euh ouaip bonne chance :)
+                temp, collisition_modification = player1.set_bomb(collisition_modification)
+                # print(collisition_modification)
+                if temp != "none":
+                    bomb_data.append(temp)
 
-        if keyboard_input["RSHIFT"] == True and release_space == True: # Euh ouaip bonne chance :)
-            temp, collisition_modification = player2.set_bomb(collisition_modification)
-            if temp != "none":
-                bomb_data.append(temp)
+            if keyboard_input["RSHIFT"] == True and release_space == True: # Euh ouaip bonne chance :)
+                temp, collisition_modification = player2.set_bomb(collisition_modification)
+                if temp != "none":
+                    bomb_data.append(temp)
         
         
         md.displayer(window_surface)
         
-        bomb_data, explosion_data, collisition_modification = bbomb.poseBomb(window_surface, bomb_data, explosion_data, frame_compensation, collisition_modification)
-        explosion_data, collisition_modification = bbomb.explosion(window_surface, explosion_data, frame_compensation, collisions, collisition_modification)
-        player1.player_display(window_surface, frame_compensation)
-        player2.player_display(window_surface, frame_compensation)
-        if pause == False:
-            player1.movement(keyboard_input, collisions, frame_compensation)  
-            player2.movementp2(keyboard_input, collisions, frame_compensation)
+        bomb_data, explosion_data, collisition_modification = bbomb.poseBomb(window_surface, bomb_data, explosion_data, frame_compensation, collisition_modification, pause)
+        explosion_data, collisition_modification = bbomb.explosion(window_surface, explosion_data, frame_compensation, collisions, collisition_modification, pause)
+        player1.player_display(window_surface, frame_compensation, end_game[0])
+        player2.player_display(window_surface, frame_compensation, end_game[1])
+        
+        
         
         collisions = md.collisions_updater(collisition_modification)
 
@@ -404,41 +405,48 @@ while launched: # Pour fermer la fenêtre
                 player_left += 1
         
         if player_left <= 1:
-            pass
-
-
-
-        if escape_released == True: #Activation de la pause
-            if pause == False and keyboard_input["ESCAPE"] == True:
-                escape_released = False
-                pause = True
-            elif keyboard_input["ESCAPE"] == True:
-                escape_released = False
-                pause = False
-        
-        if keyboard_input["ESCAPE"] == True:
-            escape_released = False
-        else:
-            escape_released = True
-
-        if keyboard_input["SPACE"] == True:
-            release_space = False
-        else:
-            release_space = True
-
-        if keyboard_input["RSHIFT"] == True:
-            release_rshift = False
-        else:
-            release_rshift = True
-
-        if pause == True:
+            pause = True
             window_surface.blit(a, (0,0))    # (0,0) are the top-left coordinates
-            window_surface.blit(text_150a.render("Pause", True, white), res_pos(720,0))
-            if collision_rect(790, 500, 300, 105, "Continuer")[1] == True:
-                pause = False
+            window_surface.blit(text_150a.render("Fin de partie", True, white), res_pos(510,0))
+            for i in range(player_numb):
+                if end_game[i] == True:
+                    window_surface.blit(text_150a.render(f"Joueur {i+1} à gagné", True, white), res_pos(340,200))
             if collision_rect(530, 700, 825, 105, "Retour au choix des niveaux")[1] == True:
                 menu = 1
                 fade_var = [0, 1]
+
+        else:
+            if escape_released == True: #Activation de la pause
+                if pause == False and keyboard_input["ESCAPE"] == True:
+                    escape_released = False
+                    pause = True
+                elif keyboard_input["ESCAPE"] == True:
+                    escape_released = False
+                    pause = False
+
+            if keyboard_input["ESCAPE"] == True:
+                escape_released = False
+            else:
+                escape_released = True
+
+            if keyboard_input["SPACE"] == True:
+                release_space = False
+            else:
+                release_space = True
+
+            if keyboard_input["RSHIFT"] == True:
+                release_rshift = False
+            else:
+                release_rshift = True
+
+            if pause == True:
+                window_surface.blit(a, (0,0))    # (0,0) are the top-left coordinates
+                window_surface.blit(text_150a.render("Pause", True, white), res_pos(720,0))
+                if collision_rect(790, 500, 300, 105, "Continuer")[1] == True:
+                    pause = False
+                if collision_rect(530, 700, 825, 105, "Retour au choix des niveaux")[1] == True:
+                    menu = 1
+                    fade_var = [0, 1]
         
         fade_var, menu, temp_menu = fade_in(fade_var, menu, temp_menu, 3)
 

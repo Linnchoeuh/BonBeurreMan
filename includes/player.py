@@ -38,10 +38,11 @@ class Player():
         # print(self.maplimit)   
     
     
-    def player_display(self, window_surface, frame_compensation): # Fonction qui fait spawn le joueur
-        window_surface.blit(self.sprite, (self.x,self.y))
-        if self.cd > 0:
-            self.cd -= 1*frame_compensation
+    def player_display(self, window_surface, frame_compensation, show): # Fonction qui fait spawn le joueur
+        if show == True:   
+            window_surface.blit(self.sprite, (self.x,self.y))
+            if self.cd > 0:
+                self.cd -= 1*frame_compensation
 
     def set_bomb(self, collision_updater): # Fonction qui fait spawn la bombe
         if self.cd <= 0:
