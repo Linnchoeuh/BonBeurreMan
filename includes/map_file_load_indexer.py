@@ -45,9 +45,6 @@ def map_file_indexer(script_path, listdir, Image, Unpickler):
 
             if check == True:
                 maplimit = [lvl_data[1], lvl_data[2]] #Stocke la taille de la map
-                print("ui")
-                print(lvl_data[0])
-                print(maplimit)
                 mapcontent = lvl_data[4:] #Stocke les élement de la map
                 temp = []
                 for i in range(len(mapcontent)): #vérifie que la liste ne contient pas d'élément qui dépasse de la carte, et les retire le cas echeant
