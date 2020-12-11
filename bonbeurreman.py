@@ -315,10 +315,10 @@ while launched: # Pour fermer la fenêtre
             if collision_rect(0, 975, 300, 105, "Retour")[1] == True:
                 menu = 0
                 fade_var = [0, 1]
-            if collision_rect(1320, 975, 600, 105, "Connecter manettes")[1] == True:
-                pass
-            if collision_rect(490, 975, 675, 105, "Connexion multi local")[1] == True:
-                pass
+            # if collision_rect(1320, 975, 600, 105, "Connecter manettes")[1] == True:
+            #     pass
+            # if collision_rect(490, 975, 675, 105, "Connexion multi local")[1] == True:
+            #     pass
         
         fade_var, menu, temp_menu = fade_in(fade_var, menu, temp_menu, 1)
             
