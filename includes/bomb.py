@@ -24,20 +24,19 @@ class Bomb(): # Création de la casse de la bombe
         self.centeringmap = [centeringmapx, centeringmapy] 
 
     def poseBomb(self, surface, bomb_index, explosion_index, frame_compensation):
-        del_bomb_list = []
+        bomb_index_temp = []
+        collision_update = []
         if bomb_index != []:
             for i in range(len(bomb_index)):   
                 surface.blit(self.sprite, [bomb_index[i][0], bomb_index[i][1]])
                 bomb_index[i][2] -= 1*frame_compensation
-                if bomb_index[i][2] <= 0:
-                    del_bomb_list.append(i)
-        if del_bomb_list != []:
-            for i in range(len(del_bomb_list)):
-                explosion_index.append([bomb_index[del_bomb_list[i]][0], bomb_index[del_bomb_list[i]][1], 4, [2,0]])
-                del bomb_index[del_bomb_list[i]]
+                if bomb_index[i][2] > 0:
+                    bomb_index_temp.append(bomb_index[i])
+                else:
+                    explosion_index.append([bomb_index[i][0], bomb_index[i][1], 4, [2,0]])
                 
 
-        return bomb_index, explosion_index
+        return bomb_index_temp, explosion_index#, collision_update
 
 
     def explosion(self, window_surface, explosion_data, frame_compensation, collisions):

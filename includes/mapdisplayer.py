@@ -128,13 +128,12 @@ class Mapdislayer:
     def collisions_updater(self, modification):
         if modification != []:
             for i in range(len(modification)):
-                # print(self.collisionsmap[modification[i][0]])
                 self.collisionsmap[modification[i][0]] = modification[i][1]
-                for a in range(len(self.mapcontent)):
-                    print(f"Compare {((modification[i][0]%(self.maplimit[0]+1))*self.blockscale+self.centeringmapx, (modification[i][0]//(self.maplimit[0]+1))*self.blockscale+self.centeringmapy)} | {self.mapcontent[a][1]}")
-                    if ((modification[i][0]%(self.maplimit[0]+1))*self.blockscale+self.centeringmapx, (modification[i][0]//(self.maplimit[0]+1))*self.blockscale+self.centeringmapy) == self.mapcontent[a][1]:
-                        del self.mapcontent[a]
-                        print("ok")
-                        break
+                if modification[i][1] == 0:
+                    for a in range(len(self.mapcontent)):
+                        # print(f"Compare {((modification[i][0]%(self.maplimit[0]+1))*self.blockscale+self.centeringmapx, (modification[i][0]//(self.maplimit[0]+1))*self.blockscale+self.centeringmapy)} | {self.mapcontent[a][1]}")
+                        if ((modification[i][0]%(self.maplimit[0]+1))*self.blockscale+self.centeringmapx, (modification[i][0]//(self.maplimit[0]+1))*self.blockscale+self.centeringmapy) == self.mapcontent[a][1]:
+                            del self.mapcontent[a]
+                            break
                         
         return self.collisionsmap

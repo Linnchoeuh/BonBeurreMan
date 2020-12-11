@@ -43,6 +43,7 @@ script_path = dirname(realpath(__file__))
 script_path = script_path.replace("\\", "/")
 # Definitions des variables -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 player1 = player.Player(f"{script_path}/img/player_stuff/perso.png", 10, 100, 32, 32, 5)
+player2 = player.Player(f"{script_path}/img/player_stuff/perso.png", 10, 100, 32, 32, 5)
 bbomb = bomb.Bomb(f"{script_path}/img/bomb/bomb_pixel.png", player1.x, player1.y, f"{script_path}/img/bomb/explosion/explo1.png", f"{script_path}/img/bomb/explosion/explo2.png", f"{script_path}/img/bomb/explosion/explo3.png", f"{script_path}/img/bomb/explosion/explo4.png", f"{script_path}/img/bomb/explosion/explo5.png")
 
 red = (255, 0, 0) # Quelque variable de couleur prédéfini
@@ -67,29 +68,10 @@ menu = 0 #Menu d'entrée
 load_menu = 0 #Variable permettant de charger a la première frame du menu actif
 
 mouse_click_left = True # Variable a utiliser si l'on veut que l'utilisateur relache le click
-# keyboard_input = KeyBoardKeyDetect.keyboard_input_fonc() 
-keyboard_input = {
-    "z" : False,
-    "s" : False,
-    "q" : False,
-    "d" : False,
-    "UP" : False,
-    "DOWN" : False,
-    "LEFT" : False,
-    "RIGHT" : False,
-    "SPACE" : False,
-    "LSHIFT" : False,
-    "RETURN" : False,
-    "ESCAPE" : False
-} #Dictionnaire des touches pressables
-
-
 
 fichiers = map_indexer.map_file_indexer(script_path, listdir, Image, Unpickler)
 editor = mapeditor.MapEditor(res)
 minimap_list = []
-
-
 
 md = mapdisplayer.Mapdislayer(res)
 result = "ok"
@@ -271,7 +253,7 @@ while launched: # Pour fermer la fenêtre
             pause = False
             load_menu = 1
         
-        # window_surface.blit(beurre2, res_pos(0,0))
+        window_surface.blit(beurre2, res_pos(0,0))
         window_surface.blit(text_150a.render("Choisissez votre niveau", True, white), res_pos(60,0))
 
         k = i = level_select_offset*5
@@ -371,11 +353,13 @@ while launched: # Pour fermer la fenêtre
             mouse_click_left = False
             collisions = md.collisions_updater([])
             player1.player_start(md.blockscale, md.playersspawns[0], md.centeringmapx, md.centeringmapy, md.maplimit)
+            player2.player_start(md.blockscale, md.playersspawns[1], md.centeringmapx, md.centeringmapy, md.maplimit)
             bbomb.bomb_init(md.blockscale, md.centeringmapx, md.centeringmapy, md.maplimit)
             release_space = True
             lag = 0
             bomb_data = []
             explosion_data = []
+            release_rshift = True
             load_menu = 3
         collisition_modification = []
 
@@ -385,6 +369,11 @@ while launched: # Pour fermer la fenêtre
             if temp != "none":
                 bomb_data.append(temp)
         # print(bomb_data, explosion_data)
+
+        if keyboard_input["RSHIFT"] == True and release_space == True: # Euh ouaip bonne chance :)
+            temp = player2.set_bomb()
+            if temp != "none":
+                bomb_data.append(temp)
         
         
         md.displayer(window_surface)
@@ -392,7 +381,9 @@ while launched: # Pour fermer la fenêtre
         bomb_data, explosion_data = bbomb.poseBomb(window_surface, bomb_data, explosion_data, frame_compensation)
         explosion_data, collisition_modification = bbomb.explosion(window_surface, explosion_data, frame_compensation, collisions)
         player1.player_display(window_surface, frame_compensation)
-        lag = player1.movement(keyboard_input, collisions, lag, frame_compensation)
+        player2.player_display(window_surface, frame_compensation)
+        player1.movement(keyboard_input, collisions, frame_compensation)
+        player2.movementp2(keyboard_input, collisions, frame_compensation)
         # print(collisition_modification)
         collisions = md.collisions_updater(collisition_modification)
         
@@ -413,6 +404,11 @@ while launched: # Pour fermer la fenêtre
             release_space = False
         else:
             release_space = True
+
+        if keyboard_input["RSHIFT"] == True:
+            release_rshift = False
+        else:
+            release_rshift = True
 
         if pause == True:
             window_surface.blit(a, (0,0))    # (0,0) are the top-left coordinates

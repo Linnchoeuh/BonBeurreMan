@@ -8,7 +8,7 @@ keyboard_input = {
     "LEFT" : False,
     "RIGHT" : False,
     "SPACE" : False,
-    "LSHIFT" : False,
+    "RSHIFT" : False,
     "RETURN" : False,
     "ESCAPE" : False
 }
@@ -78,10 +78,10 @@ def keyboard_input_fonc(pygame):
         
 
     #LSHIFT
-    if pressing[pygame.K_LSHIFT]:
-        keyboard_input["LSHIFT"] = True
+    if pressing[pygame.K_RSHIFT]:
+        keyboard_input["RSHIFT"] = True
     else:
-        keyboard_input["LSHIFT"] = False
+        keyboard_input["RSHIFT"] = False
         
 
     #RETURN
@@ -110,7 +110,7 @@ key_name = [
     "K_LEFT",
     "K_RIGHT",
     "K_SPACE",
-    "K_LSHIFT",
+    "K_RSHIFT",
     "K_RETURN",
     "K_ESCAPE"
 ]
