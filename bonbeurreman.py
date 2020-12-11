@@ -32,7 +32,7 @@ import includes.mapeditor as mapeditor
 import ctypes
 from os import listdir
 from os.path import dirname, realpath
-from pickle import Pickler, Unpickler
+from pickle import BINBYTES, Pickler, Unpickler
 
 
 
@@ -190,6 +190,7 @@ right_arrow = pygame.transform.smoothscale(right_arrow, res_pos(95,180))
 
 beurre = pygame.image.load(f"{script_path}/img/ui/beurre.png").convert_alpha()
 beurre = pygame.transform.smoothscale(beurre, res_pos(400,267))
+
 beurre2 = pygame.transform.smoothscale(beurre, res_pos(1920, 1080))
 # TODO : Changer les chemins des images avec les bons chemins du github
 ground = pygame.image.load(f"{script_path}/img/map/ground.png").convert_alpha()
@@ -352,41 +353,61 @@ while launched: # Pour fermer la fenêtre
         if load_menu != 3: # Mettez ici les éléments a charger une seule fois
             mouse_click_left = False
             collisions = md.collisions_updater([])
-            player1.player_start(md.blockscale, md.playersspawns[0], md.centeringmapx, md.centeringmapy, md.maplimit)
-            player2.player_start(md.blockscale, md.playersspawns[1], md.centeringmapx, md.centeringmapy, md.maplimit)
+            player_numb = 2
+            player1.player_start(md.blockscale, md.playersspawns[0], md.centeringmapx, md.centeringmapy, md.maplimit, 1)
+            player2.player_start(md.blockscale, md.playersspawns[1], md.centeringmapx, md.centeringmapy, md.maplimit, 2)
             bbomb.bomb_init(md.blockscale, md.centeringmapx, md.centeringmapy, md.maplimit)
+            end_game = []
+            for i in range(player_numb):
+                end_game.append(True)
             release_space = True
             lag = 0
             bomb_data = []
             explosion_data = []
             release_rshift = True
             load_menu = 3
+            
         collisition_modification = []
-
+ 
         
         if keyboard_input["SPACE"] == True and release_space == True: # Euh ouaip bonne chance :)
-            temp = player1.set_bomb()
+            temp, collisition_modification = player1.set_bomb(collisition_modification)
+            # print(collisition_modification)
             if temp != "none":
                 bomb_data.append(temp)
         # print(bomb_data, explosion_data)
 
         if keyboard_input["RSHIFT"] == True and release_space == True: # Euh ouaip bonne chance :)
-            temp = player2.set_bomb()
+            temp, collisition_modification = player2.set_bomb(collisition_modification)
             if temp != "none":
                 bomb_data.append(temp)
         
         
         md.displayer(window_surface)
         
-        bomb_data, explosion_data = bbomb.poseBomb(window_surface, bomb_data, explosion_data, frame_compensation)
-        explosion_data, collisition_modification = bbomb.explosion(window_surface, explosion_data, frame_compensation, collisions)
+        bomb_data, explosion_data, collisition_modification = bbomb.poseBomb(window_surface, bomb_data, explosion_data, frame_compensation, collisition_modification)
+        explosion_data, collisition_modification = bbomb.explosion(window_surface, explosion_data, frame_compensation, collisions, collisition_modification)
         player1.player_display(window_surface, frame_compensation)
         player2.player_display(window_surface, frame_compensation)
-        player1.movement(keyboard_input, collisions, frame_compensation)
-        player2.movementp2(keyboard_input, collisions, frame_compensation)
-        # print(collisition_modification)
-        collisions = md.collisions_updater(collisition_modification)
+        if pause == False:
+            player1.movement(keyboard_input, collisions, frame_compensation)  
+            player2.movementp2(keyboard_input, collisions, frame_compensation)
         
+        collisions = md.collisions_updater(collisition_modification)
+
+        end_game = player1.kill(collisions, end_game)
+        end_game = player2.kill(collisions, end_game)
+
+        player_left = 0
+        for i in range(player_numb):
+            if end_game[i] == True:
+                player_left += 1
+        
+        if player_left <= 1:
+            pass
+
+
+
         if escape_released == True: #Activation de la pause
             if pause == False and keyboard_input["ESCAPE"] == True:
                 escape_released = False
@@ -534,3 +555,4 @@ while launched: # Pour fermer la fenêtre
     pygame.display.flip() # Met a jour l'affichage
     dt = clock.tick(60)/1000 # Permet de limiter la framerate a 60fps
     frame_compensation = dt/(1/60)
+    

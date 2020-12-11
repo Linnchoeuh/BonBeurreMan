@@ -11,7 +11,7 @@ class Mapdislayer:
         self.res = res
         self.texture = []
         self.bg_map = 0
-        self.collisionsmap = [] #0 pas de collisions, 1 collisions, 2 block cassable, 3 joueur, 4 bomb, 5 power up
+        self.collisionsmap = [] #0 pas de collisions, 1 collisions, 2 block cassable, 3 bomb, 4 explosion, 5 power up
 
     def res_pos(self, spacex = 0, spacey = 0): # Permet de positionner un élement au meme endroit peu importe la résolution d'affichage
         return round(spacex * self.res[0]/1920) , round(spacey * self.res[1]/1080)

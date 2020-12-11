@@ -26,13 +26,15 @@ class Player():
         self.frame_compensation = 0
         self.cd = 0
         self.lag = 0
+        self.player_id = 0
 
-    def player_start(self, blockscale, playersspawns, centeringmapx, centeringmapy, maplimit):
+    def player_start(self, blockscale, playersspawns, centeringmapx, centeringmapy, maplimit, player_id):
         self.unite = blockscale
         self.x, self.y = (playersspawns[0]*blockscale)+centeringmapx, (playersspawns[1]*blockscale)+ centeringmapy
         self.sprite = pygame.transform.scale(self.sprite, (blockscale,blockscale))
         self.maplimit = [maplimit[0],maplimit[1]]
         self.centeringmap = [centeringmapx, centeringmapy]     
+        self.player_id = player_id
         # print(self.maplimit)   
     
     
@@ -41,18 +43,19 @@ class Player():
         if self.cd > 0:
             self.cd -= 1*frame_compensation
 
-    def set_bomb(self): # Fonction qui fait spawn la bombe
+    def set_bomb(self, collision_updater): # Fonction qui fait spawn la bombe
         if self.cd <= 0:
             self.cd = 100
-            return [self.x, self.y, 100]
-        return "none"
+            collision_updater.append([int((self.maplimit[0]+1)*((self.y-self.centeringmap[1])/self.unite)+((self.x-self.centeringmap[0])/self.unite)), 3])
+            return [self.x, self.y, 100], collision_updater
+        return "none", collision_updater
         
 
     # Movement du joueur
     def movement(self, dico_kb__inputs_bool, collisions, frame_compensation):
         self.lag -= 1*frame_compensation
         # (longueur map x + 1) * (position du joueur y - (décalage pour centrer la carte y / taille d'un bloc) + ((position du joueur x - décalage pour centrer la carte x) / taille d'un bloc))
-        print(collisions[(int((self.maplimit[0]+1)*((self.y-self.centeringmap[1])/self.unite)+((self.x-self.centeringmap[0])/self.unite)))])
+        # print(collisions[(int((self.maplimit[0]+1)*((self.y-self.centeringmap[1])/self.unite)+((self.x-self.centeringmap[0])/self.unite)))])
         #Bouge vers le haut
         if dico_kb__inputs_bool["z"] and self.lag <= 0 and collisions[(int((self.maplimit[0]+1)*(((self.y-self.unite)-self.centeringmap[1])/self.unite)+((self.x-self.centeringmap[0])/self.unite)))] == 0:
             self.y -= self.unite
@@ -95,3 +98,8 @@ class Player():
         if dico_kb__inputs_bool["RIGHT"] and self.lag <= 0 and collisions[(int((self.maplimit[0]+1)*((self.y-self.centeringmap[1])/self.unite)+(((self.x+self.unite)-self.centeringmap[0])/self.unite)))] == 0:
             self.x += self.unite
             self.lag = 5
+
+    def kill(self, collisions, endgame):
+        if collisions[(int((self.maplimit[0]+1)*((self.y-self.centeringmap[1])/self.unite)+((self.x-self.centeringmap[0])/self.unite)))] == 4:
+            endgame[self.player_id-1] = False
+        return endgame
