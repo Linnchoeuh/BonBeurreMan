@@ -8,7 +8,8 @@ class Player():
     #Création caractéristiques principales joueur
     def __init__(self, sprite, pos_x, pos_y, length, width, unite, direction = 0):
 
-        self.sprite = pygame.image.load(sprite)
+        self.originalsprite = pygame.image.load(sprite)
+        self.sprite = 0
         self.power = 2
         self.max_bomb = 1
         self.bomb_list = []
@@ -31,7 +32,12 @@ class Player():
     def player_start(self, blockscale, playersspawns, centeringmapx, centeringmapy, maplimit, player_id):
         self.unite = blockscale
         self.x, self.y = (playersspawns[0]*blockscale)+centeringmapx, (playersspawns[1]*blockscale)+ centeringmapy
-        self.sprite = pygame.transform.scale(self.sprite, (blockscale,blockscale))
+        self.sprite = pygame.transform.scale(self.originalsprite, (1000,1000))
+        if blockscale >= 32:    
+            self.sprite = pygame.transform.scale(self.sprite, (blockscale,blockscale))
+        else:
+            self.sprite = pygame.transform.smoothscale(self.sprite, (blockscale,blockscale))
+        print(blockscale)
         self.maplimit = [maplimit[0],maplimit[1]]
         self.centeringmap = [centeringmapx, centeringmapy]     
         self.player_id = player_id

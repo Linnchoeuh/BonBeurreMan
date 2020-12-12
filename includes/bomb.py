@@ -1,16 +1,19 @@
 import pygame
+pygame.mixer.init()
 
 class Bomb(): # Création de la casse de la bombe
     
-    def __init__(self, sprite, posx, posy, explo1, explo2, explo3, explo4, explo5):
+    def __init__(self, sprite, posx, posy, power, explo1, explo2, explo3, explo4, explo5, explo_sound):
         self.sprite = pygame.image.load(sprite)
         self.x = posx
         self.y = posy
+        self.power = power
         self.timer = 190
         self.explosion_list = [pygame.image.load(explo1), pygame.image.load(explo2), pygame.image.load(explo3), pygame.image.load(explo4), pygame.image.load(explo5)]
         self.blockscale = 0
         self.maplimit = [0,0]
         self.centeringmap = [0, 0] 
+        self.explo_sound = pygame.mixer.Sound(explo_sound)
 
     def bomb_init(self, blockscale, centeringmapx, centeringmapy, maplimit):
         self.blockscale = blockscale
@@ -33,9 +36,10 @@ class Bomb(): # Création de la casse de la bombe
                     if bomb_index[i][2] > 0:
                         bomb_index_temp.append(bomb_index[i])
                     else:
-                        explosion_index.append([bomb_index[i][0], bomb_index[i][1], 4, [2,0]])
+                        explosion_index.append([bomb_index[i][0], bomb_index[i][1], 4, [self.power,0]])
                         collisions_update.append([(int((self.maplimit[0]+1)*((bomb_index[i][1]-self.centeringmap[1])/self.blockscale)+((bomb_index[i][0]-self.centeringmap[0])/self.blockscale))), 0])
-                        #METTRE LE SON DE LA BOMBE ICI
+                        self.explo_sound.play()
+                        #METTRE LE SON DE L'EXPLOSION ICI
         else:
             for i in range(len(bomb_index)):   
                 surface.blit(self.sprite, [bomb_index[i][0], bomb_index[i][1]])
@@ -52,6 +56,13 @@ class Bomb(): # Création de la casse de la bombe
                     collisions_update.append([(int((self.maplimit[0]+1)*((explosion_data[i][1]-self.centeringmap[1])/self.blockscale)+((explosion_data[i][0]-self.centeringmap[0])/self.blockscale))), 4])
                     window_surface.blit(self.explosion_list[4-explosion_data[i][2]], (explosion_data[i][0], explosion_data[i][1]))
                     if explosion_data[i][3][0] > 0 and explosion_data[i][2] == 4:
+                        # print(round(explosion_data[i][2]/4), explosion_data[i][2]/4)
+                        # if round(explosion_data[i][2]/4) == explosion_data[i][2]/4:
+                        #     self.explo_sound.set_volume(0.25)
+                        #     self.explo_sound.play()
+                        #     self.explo_sound.set_volume(1.0)
+                        #     print("boom")
+                            #ALTERNATIVE : METTRE LE SON DE L'EXPLOSION ICI
                         if explosion_data[i][3][1] == 0 and collisions[(int((self.maplimit[0]+1)*((explosion_data[i][1]-self.centeringmap[1])/self.blockscale)+(((explosion_data[i][0]-self.blockscale)-self.centeringmap[0])/self.blockscale)))] != 1 or explosion_data[i][3][1] == 1 and collisions[(int((self.maplimit[0]+1)*((explosion_data[i][1]-self.centeringmap[1])/self.blockscale)+(((explosion_data[i][0]-self.blockscale)-self.centeringmap[0])/self.blockscale)))] != 1:
                             if collisions[(int((self.maplimit[0]+1)*((explosion_data[i][1]-self.centeringmap[1])/self.blockscale)+(((explosion_data[i][0]-self.blockscale)-self.centeringmap[0])/self.blockscale)))] == 0:
                                 temp_list_explosion_data.append([explosion_data[i][0]-self.blockscale, explosion_data[i][1], 4, [explosion_data[i][3][0]-1,1]])

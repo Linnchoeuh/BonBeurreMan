@@ -44,7 +44,7 @@ script_path = script_path.replace("\\", "/")
 # Definitions des variables -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 player1 = player.Player(f"{script_path}/img/player_stuff/BlueBirdyBomber.png", 10, 100, 32, 32, 5)
 player2 = player.Player(f"{script_path}/img/player_stuff/RedBirdyBomber.png", 10, 100, 32, 32, 5)
-bbomb = bomb.Bomb(f"{script_path}/img/bomb/bomb_pixel.png", player1.x, player1.y, f"{script_path}/img/bomb/explosion/explo1.png", f"{script_path}/img/bomb/explosion/explo2.png", f"{script_path}/img/bomb/explosion/explo3.png", f"{script_path}/img/bomb/explosion/explo4.png", f"{script_path}/img/bomb/explosion/explo5.png")
+bbomb = bomb.Bomb(f"{script_path}/img/bomb/bomb_pixel.png", player1.x, player1.y, 15, f"{script_path}/img/bomb/explosion/explo1.png", f"{script_path}/img/bomb/explosion/explo2.png", f"{script_path}/img/bomb/explosion/explo3.png", f"{script_path}/img/bomb/explosion/explo4.png", f"{script_path}/img/bomb/explosion/explo5.png",  f"{script_path}/BomberMan ST/Explosion_SFX.ogg")
 
 red = (255, 0, 0) # Quelque variable de couleur prédéfini
 green = (0, 255, 0)
@@ -85,6 +85,7 @@ arrows_slide = [0,0]
 fade_var = [0, 0]
 temp_menu = 0
 fullscreen = False
+o = 0
     
 # Génération des fonctions -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -163,6 +164,11 @@ text_150a = pygame.font.Font(f"{script_path}/fonts/arialbd.ttf", round(res_adapt
 window_surface.blit(text_150a.render("Chargement...", True, white), res_pos(450,425))
 pygame.display.flip()
 
+#Chargement sons
+
+main_sound = pygame.mixer.Sound(f"{script_path}/BomberMan ST/soundtrackbomberman.wav")
+osong = pygame.mixer.Sound(f"{script_path}/img/hiden/o.ogg")
+
 #Chargement des textures
 
 s = pygame.Surface(res)  # the size of your rect
@@ -178,8 +184,11 @@ for i in range(len(fichiers)):
     minimapimg = pygame.transform.smoothscale(minimapimg, res_pos(265,265))
     minimap_list.append(minimapimg)
 
+oimg = pygame.image.load(f"{script_path}/img/hiden/o.png").convert_alpha()
+oimg = pygame.transform.smoothscale(oimg, res_pos(1218, 900))
+
 warn = pygame.image.load(f"{script_path}/img/ui/warn.png").convert_alpha() #Fonction pour importer l'image
-warn = pygame.transform.smoothscale(warn, res_pos(220,200)) #N'utiliser pas smooth scale sur une pixel art car ca le rendrait flou
+warn = pygame.transform.smoothscale(warn, res_pos(220,200)) #N'utiliser pas smooth scale sur un pixel art car ca le rendrait flou
 # warn = pygame.transform.scale(warn, res_pos(220,200)) #Fonction pour la scale a la résolution d'affichage
 
 left_arrow = pygame.image.load(f"{script_path}/img/ui/left_arrow.png").convert_alpha()
@@ -202,6 +211,9 @@ joueur_sprite = pygame.image.load(f"{script_path}/img/player_stuff/perso.png").c
 
 
 
+
+# main_sound.play()
+
 launched = True
 while launched: # Pour fermer la fenêtre
     for event in pygame.event.get():
@@ -221,6 +233,7 @@ while launched: # Pour fermer la fenêtre
             mouse_click_left = False
             temp_menu = 0
             load_menu = 0
+            o = 0
         
         window_surface.blit(text_150a.render("BonBeurreMan", True, white), res_pos(420,0))
 
@@ -239,6 +252,60 @@ while launched: # Pour fermer la fenêtre
             launched = False
         
         window_surface.blit(beurre, res_pos(1450, 780))
+
+        if keyboard_input["o"] == True or o > 0: #Un easter egg à la con faites pas gaffe
+            if o == 0:
+                o = 1
+                print("o")
+            if keyboard_input["b"] == True or o > 1:
+                if o == 1:
+                    o = 2
+                    print("ob")
+                if keyboard_input["j"] == True or o > 2:
+                    if o == 2:
+                        o = 3
+                        print("obj")
+                    if keyboard_input["e"] == True or o > 3:
+                        if o == 3:
+                            o = 4
+                            print("obje")
+                        if keyboard_input["c"] == True or o > 4:
+                            if o == 4:
+                                o = 5
+                                print("objec")
+                            if keyboard_input["t"] == True or o > 5:
+                                if o == 5:
+                                    o = 6
+                                    print("object")
+                                if keyboard_input["i"] == True or o > 6:
+                                    if o == 6:
+                                        o = 7
+                                        print("objecti")
+                                    if keyboard_input["o"] == True or o > 7:
+                                        if o == 7:
+                                            o = 8
+                                            print("objectio")
+                                        if keyboard_input["n"] == True or o > 8:
+                                            if o == 8:
+                                                o = 9
+                                                osong.play()
+                                                print("objection!")
+                                            
+                                            if o > 8 and o < 15:
+                                                o += 1
+                                                window_surface.blit(oimg, res_pos(400,90))
+                                            elif o > 14 and o < 22:
+                                                o += 1
+                                                window_surface.blit(oimg, res_pos(400,135))
+                                            elif o > 21 and o < 28:
+                                                o += 1
+                                                window_surface.blit(oimg, res_pos(400,45))
+                                            elif o > 27 and o < 35:
+                                                o += 1
+                                                window_surface.blit(oimg, res_pos(400,90))
+                                            else:
+                                                o = 0
+
     
         fade_var, menu, temp_menu = fade_in(fade_var, menu, temp_menu, 0)
 
