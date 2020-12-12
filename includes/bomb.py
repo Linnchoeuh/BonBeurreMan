@@ -66,6 +66,8 @@ class Bomb(): # Création de la casse de la bombe
                             else:
                                 temp_list_explosion_data.append([explosion_data[i][0]-self.blockscale, explosion_data[i][1], 4, [0,1]])
                                 collisions_update.append([(int((self.maplimit[0]+1)*((explosion_data[i][1]-self.centeringmap[1])/self.blockscale)+(((explosion_data[i][0]-self.blockscale)-self.centeringmap[0])/self.blockscale))), 0])
+                            if collisions[int((self.maplimit[0]+1)*((explosion_data[i][1]-self.centeringmap[1])/self.blockscale)+((explosion_data[i][0]-self.centeringmap[0])/self.blockscale))] == 3:
+                                collisions_update.append([(int((self.maplimit[0]+1)*((explosion_data[i][1]-self.centeringmap[1])/self.blockscale)+((explosion_data[i][0]-self.centeringmap[0])/self.blockscale))), 0])
                         if explosion_data[i][3][1] == 0 and collisions[(int((self.maplimit[0]+1)*(((explosion_data[i][1]-self.blockscale)-self.centeringmap[1])/self.blockscale)+((explosion_data[i][0]-self.centeringmap[0])/self.blockscale)))] != 1 or explosion_data[i][3][1] == 2 and collisions[(int((self.maplimit[0]+1)*(((explosion_data[i][1]-self.blockscale)-self.centeringmap[1])/self.blockscale)+((explosion_data[i][0]-self.centeringmap[0])/self.blockscale)))] != 1:    
                             if collisions[(int((self.maplimit[0]+1)*(((explosion_data[i][1]-self.blockscale)-self.centeringmap[1])/self.blockscale)+((explosion_data[i][0]-self.centeringmap[0])/self.blockscale)))] == 0:
                                 temp_list_explosion_data.append([explosion_data[i][0], explosion_data[i][1]-self.blockscale, 4, [explosion_data[i][3][0]-1,2]])

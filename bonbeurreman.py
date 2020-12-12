@@ -42,9 +42,9 @@ print("Démarage de BonBeurreMan...")
 script_path = dirname(realpath(__file__))
 script_path = script_path.replace("\\", "/")
 # Definitions des variables -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-player1 = player.Player(f"{script_path}/img/player_stuff/BlueBirdyBomber.png", f"{script_path}/BomberMan ST/set_bomb.ogg", f"{script_path}/img/hiden/tt.ogg")
-player2 = player.Player(f"{script_path}/img/player_stuff/RedBirdyBomber.png", f"{script_path}/BomberMan ST/set_bomb.ogg", f"{script_path}/img/hiden/tt.ogg")
-bbomb = bomb.Bomb(f"{script_path}/img/bomb/bomb_pixel.png", player1.x, player1.y, 15, f"{script_path}/img/bomb/explosion/explo1.png", f"{script_path}/img/bomb/explosion/explo2.png", f"{script_path}/img/bomb/explosion/explo3.png", f"{script_path}/img/bomb/explosion/explo4.png", f"{script_path}/img/bomb/explosion/explo5.png",  f"{script_path}/BomberMan ST/Explosion_SFX.ogg", f"{script_path}/img/hiden/boom.ogg")
+player1 = player.Player(f"{script_path}/img/player_stuff/BlueBirdyBomber.png", f"{script_path}/BomberMan ST/set_bomb.ogg", f"{script_path}/img/hidden/tt.ogg")
+player2 = player.Player(f"{script_path}/img/player_stuff/RedBirdyBomber.png", f"{script_path}/BomberMan ST/set_bomb.ogg", f"{script_path}/img/hidden/tt.ogg")
+bbomb = bomb.Bomb(f"{script_path}/img/bomb/bomb_pixel.png", player1.x, player1.y, 15, f"{script_path}/img/bomb/explosion/explo1.png", f"{script_path}/img/bomb/explosion/explo2.png", f"{script_path}/img/bomb/explosion/explo3.png", f"{script_path}/img/bomb/explosion/explo4.png", f"{script_path}/img/bomb/explosion/explo5.png",  f"{script_path}/BomberMan ST/Explosion_SFX.ogg", f"{script_path}/img/hidden/boom.ogg")
 
 red = (255, 0, 0) # Quelque variable de couleur prédéfini
 green = (0, 255, 0)
@@ -168,9 +168,9 @@ pygame.display.flip()
 #Chargement sons
 
 # main_sound = pygame.mixer.Sound(f"{script_path}/BomberMan ST/soundtrackbomberman.wav")
-osong = pygame.mixer.Sound(f"{script_path}/img/hiden/o.ogg")
-csong = pygame.mixer.Sound(f"{script_path}/img/hiden/c.ogg")
-oesong = pygame.mixer.Sound(f"{script_path}/img/hiden/oe.ogg")
+osong = pygame.mixer.Sound(f"{script_path}/img/hidden/o.ogg")
+csong = pygame.mixer.Sound(f"{script_path}/img/hidden/c.ogg")
+oesong = pygame.mixer.Sound(f"{script_path}/img/hidden/oe.ogg")
 
 #Chargement des textures
 
@@ -187,7 +187,7 @@ for i in range(len(fichiers)):
     minimapimg = pygame.transform.smoothscale(minimapimg, res_pos(265,265))
     minimap_list.append(minimapimg)
 
-oimg = pygame.image.load(f"{script_path}/img/hiden/o.png").convert_alpha()
+oimg = pygame.image.load(f"{script_path}/img/hidden/o.png").convert_alpha()
 oimg = pygame.transform.smoothscale(oimg, res_pos(1218, 900))
 
 warn = pygame.image.load(f"{script_path}/img/ui/warn.png").convert_alpha() #Fonction pour importer l'image
