@@ -1,12 +1,9 @@
 import pygame
-import includes.bomb as bomb
-import includes.keyboard_input_detect as keyboard_input_detect
-import includes.mapdisplayer as mapdisplayer
 
 class Player():
 
     #Création caractéristiques principales joueur
-    def __init__(self, sprite, pos_x, pos_y, length, width, unite, direction = 0):
+    def __init__(self, sprite, set_bomb, tt):
 
         self.originalsprite = pygame.image.load(sprite)
         self.sprite = 0
@@ -14,20 +11,22 @@ class Player():
         self.max_bomb = 1
         self.bomb_list = []
 
-        self.x = pos_x
-        self.y = pos_y
-        self.length = length
-        self.width = width
+        self.x = 0
+        self.y = 0
         self.maplimit = [0,0]
         self.centeringmap = [0,0]
         
-        self.unite = unite
-
-        self.look = direction
+        self.unite = 0
         self.frame_compensation = 0
         self.cd = 0
         self.lag = 0
         self.player_id = 0
+
+        self.set_bomb_sound = pygame.mixer.Sound(set_bomb)
+        self.set_bomb_sound.set_volume(0.75)
+
+        self.tt_song = pygame.mixer.Sound(tt)
+        self.tt_song.set_volume(0.5)
 
     def player_start(self, blockscale, playersspawns, centeringmapx, centeringmapy, maplimit, player_id):
         self.unite = blockscale
@@ -50,8 +49,12 @@ class Player():
             if self.cd > 0:
                 self.cd -= 1*frame_compensation
 
-    def set_bomb(self, collision_updater): # Fonction qui fait spawn la bombe
+    def set_bomb(self, collision_updater, oenable): # Fonction qui fait spawn la bombe
         if self.cd <= 0:
+            if oenable == False:
+                self.set_bomb_sound.play()
+            else:
+                self.tt_song.play()
             self.cd = 100
             collision_updater.append([int((self.maplimit[0]+1)*((self.y-self.centeringmap[1])/self.unite)+((self.x-self.centeringmap[0])/self.unite)), 3])
             return [self.x, self.y, 100], collision_updater

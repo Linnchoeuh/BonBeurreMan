@@ -42,9 +42,9 @@ print("Démarage de BonBeurreMan...")
 script_path = dirname(realpath(__file__))
 script_path = script_path.replace("\\", "/")
 # Definitions des variables -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-player1 = player.Player(f"{script_path}/img/player_stuff/BlueBirdyBomber.png", 10, 100, 32, 32, 5)
-player2 = player.Player(f"{script_path}/img/player_stuff/RedBirdyBomber.png", 10, 100, 32, 32, 5)
-bbomb = bomb.Bomb(f"{script_path}/img/bomb/bomb_pixel.png", player1.x, player1.y, 15, f"{script_path}/img/bomb/explosion/explo1.png", f"{script_path}/img/bomb/explosion/explo2.png", f"{script_path}/img/bomb/explosion/explo3.png", f"{script_path}/img/bomb/explosion/explo4.png", f"{script_path}/img/bomb/explosion/explo5.png",  f"{script_path}/BomberMan ST/Explosion_SFX.ogg")
+player1 = player.Player(f"{script_path}/img/player_stuff/BlueBirdyBomber.png", f"{script_path}/BomberMan ST/set_bomb.ogg", f"{script_path}/img/hiden/tt.ogg")
+player2 = player.Player(f"{script_path}/img/player_stuff/RedBirdyBomber.png", f"{script_path}/BomberMan ST/set_bomb.ogg", f"{script_path}/img/hiden/tt.ogg")
+bbomb = bomb.Bomb(f"{script_path}/img/bomb/bomb_pixel.png", player1.x, player1.y, 15, f"{script_path}/img/bomb/explosion/explo1.png", f"{script_path}/img/bomb/explosion/explo2.png", f"{script_path}/img/bomb/explosion/explo3.png", f"{script_path}/img/bomb/explosion/explo4.png", f"{script_path}/img/bomb/explosion/explo5.png",  f"{script_path}/BomberMan ST/Explosion_SFX.ogg", f"{script_path}/img/hiden/boom.ogg")
 
 red = (255, 0, 0) # Quelque variable de couleur prédéfini
 green = (0, 255, 0)
@@ -86,6 +86,7 @@ fade_var = [0, 0]
 temp_menu = 0
 fullscreen = False
 o = 0
+oenable = False
     
 # Génération des fonctions -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -166,8 +167,10 @@ pygame.display.flip()
 
 #Chargement sons
 
-main_sound = pygame.mixer.Sound(f"{script_path}/BomberMan ST/soundtrackbomberman.wav")
+# main_sound = pygame.mixer.Sound(f"{script_path}/BomberMan ST/soundtrackbomberman.wav")
 osong = pygame.mixer.Sound(f"{script_path}/img/hiden/o.ogg")
+csong = pygame.mixer.Sound(f"{script_path}/img/hiden/c.ogg")
+oesong = pygame.mixer.Sound(f"{script_path}/img/hiden/oe.ogg")
 
 #Chargement des textures
 
@@ -288,8 +291,17 @@ while launched: # Pour fermer la fenêtre
                                         if keyboard_input["n"] == True or o > 8:
                                             if o == 8:
                                                 o = 9
-                                                osong.play()
+                                                
                                                 print("objection!")
+                                                if oenable == False:
+                                                    osong.play()
+                                                    csong.set_volume(0.5)
+                                                    csong.play(-1)
+                                                    oenable = True
+                                                else:
+                                                    oesong.play()
+                                                    csong.stop()
+                                                    oenable = False
                                             
                                             if o > 8 and o < 15:
                                                 o += 1
@@ -441,20 +453,20 @@ while launched: # Pour fermer la fenêtre
             player2.movementp2(keyboard_input, collisions, frame_compensation)
         
             if keyboard_input["SPACE"] == True and release_space == True: # Euh ouaip bonne chance :)
-                temp, collisition_modification = player1.set_bomb(collisition_modification)
+                temp, collisition_modification = player1.set_bomb(collisition_modification, oenable)
                 # print(collisition_modification)
                 if temp != "none":
                     bomb_data.append(temp)
 
             if keyboard_input["RSHIFT"] == True and release_space == True: # Euh ouaip bonne chance :)
-                temp, collisition_modification = player2.set_bomb(collisition_modification)
+                temp, collisition_modification = player2.set_bomb(collisition_modification, oenable)
                 if temp != "none":
                     bomb_data.append(temp)
         
         
         md.displayer(window_surface)
         
-        bomb_data, explosion_data, collisition_modification = bbomb.poseBomb(window_surface, bomb_data, explosion_data, frame_compensation, collisition_modification, pause)
+        bomb_data, explosion_data, collisition_modification = bbomb.poseBomb(window_surface, bomb_data, explosion_data, frame_compensation, collisition_modification, pause, oenable)
         explosion_data, collisition_modification = bbomb.explosion(window_surface, explosion_data, frame_compensation, collisions, collisition_modification, pause)
         player1.player_display(window_surface, frame_compensation, end_game[0])
         player2.player_display(window_surface, frame_compensation, end_game[1])
