@@ -44,7 +44,7 @@ script_path = script_path.replace("\\", "/")
 # Definitions des variables -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 player1 = player.Player(f"{script_path}/img/player_stuff/BlueBirdyBomber.png", f"{script_path}/BomberMan ST/set_bomb.ogg", f"{script_path}/img/hidden/tt.ogg")
 player2 = player.Player(f"{script_path}/img/player_stuff/RedBirdyBomber.png", f"{script_path}/BomberMan ST/set_bomb.ogg", f"{script_path}/img/hidden/tt.ogg")
-bbomb = bomb.Bomb(f"{script_path}/img/bomb/bomb_pixel.png", player1.x, player1.y, 2, f"{script_path}/img/bomb/explosion/explo1.png", f"{script_path}/img/bomb/explosion/explo2.png", f"{script_path}/img/bomb/explosion/explo3.png", f"{script_path}/img/bomb/explosion/explo4.png", f"{script_path}/img/bomb/explosion/explo5.png",  f"{script_path}/BomberMan ST/Explosion_SFX.ogg", f"{script_path}/img/hidden/boom.ogg")
+bbomb = bomb.Bomb(f"{script_path}/img/bomb/bomb_pixel.png", player1.x, player1.y, 2, f"{script_path}/img/bomb/explosion/explo1.png", f"{script_path}/img/bomb/explosion/explo2.png", f"{script_path}/img/bomb/explosion/explo3.png", f"{script_path}/img/bomb/explosion/explo4.png", f"{script_path}/img/bomb/explosion/explo5.png",  f"{script_path}/BomberMan ST/Explosion_SFX.ogg", f"{script_path}/img/hidden/boom.ogg", f"{script_path}/img/hidden/tt.png")
 
 red = (255, 0, 0) # Quelque variable de couleur prédéfini
 green = (0, 255, 0)
@@ -469,7 +469,7 @@ while launched: # Pour fermer la fenêtre
         md.displayer(window_surface)
         
         bomb_data, explosion_data, collisition_modification = bbomb.poseBomb(window_surface, bomb_data, explosion_data, frame_compensation, collisition_modification, pause, oenable)
-        explosion_data, collisition_modification, bomb_data = bbomb.explosion(window_surface, explosion_data, collisions, collisition_modification, pause, bomb_data)
+        explosion_data, collisition_modification, bomb_data = bbomb.explosion(window_surface, explosion_data, collisions, collisition_modification, pause, bomb_data, oenable)
         player1.player_display(window_surface, frame_compensation, end_game[0])
         player2.player_display(window_surface, frame_compensation, end_game[1])
         

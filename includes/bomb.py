@@ -4,12 +4,13 @@ pygame.mixer.init()
 class Bomb(): # Création de la casse de la bombe
     
     def __init__(self, sprite, posx, posy, power, explo1, explo2, explo3, explo4, explo5, explo_sound, boom, tt):
-        self.sprite = pygame.image.load(sprite)
+        self.original_sprite = pygame.image.load(sprite)
         self.x = posx
         self.y = posy
         self.power = power
         self.timer = 190
-        self.explosion_list = [pygame.image.load(explo1), pygame.image.load(explo2), pygame.image.load(explo3), pygame.image.load(explo4), pygame.image.load(explo5)]
+        self.original_explosion_list = [pygame.image.load(explo1), pygame.image.load(explo2), pygame.image.load(explo3), pygame.image.load(explo4), pygame.image.load(explo5)]
+        self.original_ttimg = pygame.image.load(tt)
         self.blockscale = 0
         self.maplimit = [0,0]
         self.centeringmap = [0, 0] 
@@ -18,12 +19,13 @@ class Bomb(): # Création de la casse de la bombe
 
     def bomb_init(self, blockscale, centeringmapx, centeringmapy, maplimit):
         self.blockscale = blockscale
-        self.sprite = pygame.transform.scale(self.sprite, (blockscale, blockscale))
-        self.explosion_list = [pygame.transform.scale(self.explosion_list[0], (blockscale, blockscale)),
-                                pygame.transform.scale(self.explosion_list[1], (blockscale, blockscale)),
-                                pygame.transform.scale(self.explosion_list[2], (blockscale, blockscale)),
-                                pygame.transform.scale(self.explosion_list[3], (blockscale, blockscale)),
-                                pygame.transform.scale(self.explosion_list[4], (blockscale, blockscale))]
+        self.sprite = pygame.transform.scale(self.original_sprite, (blockscale, blockscale))
+        self.explosion_list = [pygame.transform.scale(self.original_explosion_list[0], (blockscale, blockscale)),
+                                pygame.transform.scale(self.original_explosion_list[1], (blockscale, blockscale)),
+                                pygame.transform.scale(self.original_explosion_list[2], (blockscale, blockscale)),
+                                pygame.transform.scale(self.original_explosion_list[3], (blockscale, blockscale)),
+                                pygame.transform.scale(self.original_explosion_list[4], (blockscale, blockscale))]
+        self.ttimg = pygame.transform.smoothscale(self.original_ttimg, (blockscale, blockscale))
         self.maplimit = [maplimit[0],maplimit[1]]
         self.centeringmap = [centeringmapx, centeringmapy] 
 
@@ -51,7 +53,7 @@ class Bomb(): # Création de la casse de la bombe
         return bomb_index_temp, explosion_index, collisions_update
 
 
-    def explosion(self, window_surface, explosion_data, collisions, collisions_update, pause, bomb_data):
+    def explosion(self, window_surface, explosion_data, collisions, collisions_update, pause, bomb_data, oenable):
         temp_list_explosion_data = []
         remove_bomb = []
         bomb_data_temp = []
@@ -118,9 +120,11 @@ class Bomb(): # Création de la casse de la bombe
                                 temp_list_explosion_data.append([explosion_data[i][0], explosion_data[i][1]+self.blockscale, 4, [0,4]])
                                 collisions_update.append([(int((self.maplimit[0]+1)*(((explosion_data[i][1]+self.blockscale)-self.centeringmap[1])/self.blockscale)+((explosion_data[i][0]-self.centeringmap[0])/self.blockscale))), 0])
                     
-                    # print(collisions[int((self.maplimit[0]+1)*((explosion_data[i][1]-self.centeringmap[1])/self.blockscale)+((explosion_data[i][0]-self.centeringmap[0])/self.blockscale))])
 
-                    window_surface.blit(self.explosion_list[4-explosion_data[i][2]], (explosion_data[i][0], explosion_data[i][1]))
+                    if oenable == False:
+                        window_surface.blit(self.explosion_list[4-explosion_data[i][2]], (explosion_data[i][0], explosion_data[i][1]))
+                    else:
+                        window_surface.blit(self.ttimg, (explosion_data[i][0], explosion_data[i][1]))
 
                     if explosion_data[i][2] > 0:
                         explosion_data[i][2] -= 1
@@ -130,7 +134,11 @@ class Bomb(): # Création de la casse de la bombe
         else:
             temp_list_explosion_data = explosion_data
             for i in range(len(explosion_data)):
-                window_surface.blit(self.explosion_list[4-explosion_data[i][2]], (explosion_data[i][0], explosion_data[i][1]))
+                if oenable == False:
+                    window_surface.blit(self.explosion_list[4-explosion_data[i][2]], (explosion_data[i][0], explosion_data[i][1]))
+                else:
+                    window_surface.blit(self.ttimg, (explosion_data[i][0], explosion_data[i][1]))
+
 
         if remove_bomb != []:
             for i in range(len(bomb_data)):
