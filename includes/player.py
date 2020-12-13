@@ -37,7 +37,6 @@ class Player():
             self.sprite = pygame.transform.scale(self.sprite, (blockscale,blockscale))
         else:
             self.sprite = pygame.transform.smoothscale(self.sprite, (blockscale,blockscale))
-        print(blockscale)
         self.maplimit = [maplimit[0],maplimit[1]]
         self.centeringmap = [centeringmapx, centeringmapy]     
         self.player_id = player_id

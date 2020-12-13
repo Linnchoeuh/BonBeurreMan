@@ -7,7 +7,6 @@ def map_file_indexer(script_path, listdir, Image, Unpickler, remove):
         if fichiers[i].endswith(".data") == True:
             temp.append(fichiers[i][:fichiers[i].find(".data")])
     fichiers = temp
-    print(fichiers)
     referenced_minimap = listdir(f"{script_path}/img/temp/mini_map")
     for i in range(len(referenced_minimap)):
         remove(f"{script_path}/img/temp/mini_map/{referenced_minimap[i]}")

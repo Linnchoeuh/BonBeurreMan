@@ -44,7 +44,7 @@ script_path = script_path.replace("\\", "/")
 # Definitions des variables -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 player1 = player.Player(f"{script_path}/img/player_stuff/BlueBirdyBomber.png", f"{script_path}/BomberMan ST/set_bomb.ogg", f"{script_path}/img/hidden/tt.ogg")
 player2 = player.Player(f"{script_path}/img/player_stuff/RedBirdyBomber.png", f"{script_path}/BomberMan ST/set_bomb.ogg", f"{script_path}/img/hidden/tt.ogg")
-bbomb = bomb.Bomb(f"{script_path}/img/bomb/bomb_pixel.png", player1.x, player1.y, 2, f"{script_path}/img/bomb/explosion/explo1.png", f"{script_path}/img/bomb/explosion/explo2.png", f"{script_path}/img/bomb/explosion/explo3.png", f"{script_path}/img/bomb/explosion/explo4.png", f"{script_path}/img/bomb/explosion/explo5.png",  f"{script_path}/BomberMan ST/Explosion_SFX.ogg", f"{script_path}/img/hidden/boom.ogg", f"{script_path}/img/hidden/tt.png")
+bbomb = bomb.Bomb(f"{script_path}/img/bomb/bomb_pixel.png", player1.x, player1.y, 15, f"{script_path}/img/bomb/explosion/explo1.png", f"{script_path}/img/bomb/explosion/explo2.png", f"{script_path}/img/bomb/explosion/explo3.png", f"{script_path}/img/bomb/explosion/explo4.png", f"{script_path}/img/bomb/explosion/explo5.png",  f"{script_path}/BomberMan ST/Explosion_SFX.ogg", f"{script_path}/img/hidden/boom.ogg", f"{script_path}/img/hidden/tt.png")
 
 red = (255, 0, 0) # Quelque variable de couleur prédéfini
 green = (0, 255, 0)
@@ -70,7 +70,6 @@ load_menu = 0 #Variable permettant de charger a la première frame du menu actif
 mouse_click_left = True # Variable a utiliser si l'on veut que l'utilisateur relache le click
 
 fichiers = map_indexer.map_file_indexer(script_path, listdir, Image, Unpickler, remove)
-print(fichiers)
 editor = mapeditor.MapEditor(res)
 minimap_list = []
 
@@ -184,7 +183,6 @@ a.set_alpha(128)
 a.fill((0, 0, 0))      
 
 for i in range(len(fichiers)):
-    print(f"{script_path}/img/temp/mini_map/{fichiers[i]}_cache.png")
     minimapimg = pygame.image.load(f"{script_path}/img/temp/mini_map/{fichiers[i]}_cache.png").convert_alpha()
     minimapimg = pygame.transform.smoothscale(minimapimg, res_pos(265,265))
     minimap_list.append(minimapimg)
@@ -346,6 +344,7 @@ while launched: # Pour fermer la fenêtre
                 break
             cache = (160+i*325-k*325)+level_slide
             window_surface.blit(minimap_list[round(i)], res_pos(cache, 300))
+            window_surface.blit(text_40a.render(fichiers[round(i)], True, black), res_pos(cache+3, 613))
             window_surface.blit(text_40a.render(fichiers[round(i)], True, white), res_pos(cache, 610))
             if collision_rect(cache, 300, 265, 400)[1] == True: #Si un niveau est activé
                 fade_var = [0, 0]
