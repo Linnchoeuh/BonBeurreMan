@@ -87,6 +87,7 @@ temp_menu = 0
 fullscreen = False
 o = 0
 oenable = False
+# hi = 0
     
 # Génération des fonctions -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -124,26 +125,49 @@ def collision_rect_texture(x, y, texture, texture_rect, click_block_condition = 
     return (touched, pressed)
 
 def fade_in(fade, fmenu, ftemp_menu, initial_menu):
-    if fade == [255, -1]:
-        fmenu = ftemp_menu
-        window_surface.fill(black)
-    if fade == [0, 1]:
-        ftemp_menu = fmenu
-        fmenu = initial_menu
-    if fade[1] == 1:
-        if fade[0] + 20 < 255:
-            s.set_alpha(fade[0] + 20*frame_compensation)
-            fade[0] += 20*frame_compensation
-        else:   
-            s.set_alpha(255)
-            fade = [255, -1]
-    if fade[1] == -1 and fade[0] != 0 and fmenu == ftemp_menu:
-        if fade[0] - 20 > 0:
-            s.set_alpha(fade[0] - 20*frame_compensation)
-            fade[0] -= 20*frame_compensation  
-        else:
-            s.set_alpha(0)
-            fade = [0, 0]
+    if oenable == False:    
+        if fade == [255, -1]:
+            fmenu = ftemp_menu
+            window_surface.fill(black)
+        if fade == [0, 1]:
+            ftemp_menu = fmenu
+            fmenu = initial_menu
+        if fade[1] == 1:
+            if fade[0] + 20 < 255:
+                s.set_alpha(fade[0] + 20*frame_compensation)
+                fade[0] += 20*frame_compensation
+            else:   
+                s.set_alpha(255)
+                fade = [255, -1]
+        if fade[1] == -1 and fade[0] != 0 and fmenu == ftemp_menu:
+            if fade[0] - 20 > 0:
+                s.set_alpha(fade[0] - 20*frame_compensation)
+                fade[0] -= 20*frame_compensation  
+            else:
+                s.set_alpha(0)
+                fade = [0, 0]
+    else:
+        if fade == [0, 1]:
+            ftemp_menu = fmenu
+            fmenu = initial_menu
+            hisong.set_volume(0.4)
+            hisong.play()
+            fade[0] += 1
+        if fade[0] > 0 and fade[0] < 8:
+            fade[0] += 1
+            window_surface.blit(hiimg, res_pos(400,90))
+        if fade[0] > 7 and fade[0] < 16:
+            fade[0] += 1
+            window_surface.blit(hiimg, res_pos(400,135))
+        if fade[0] > 15 and fade[0] < 23:
+            fade[0] += 1
+            window_surface.blit(hiimg, res_pos(400,45))
+        if fade[0] > 22 and fade[0] < 30:
+            fade[0] += 1
+            window_surface.blit(hiimg, res_pos(400,90))
+            if fade[0] > 29:
+                fmenu = ftemp_menu
+                fade = [0,0]
     return (fade, fmenu, ftemp_menu)
 
 
@@ -171,6 +195,7 @@ pygame.display.flip()
 osong = pygame.mixer.Sound(f"{script_path}/img/hidden/o.ogg")
 csong = pygame.mixer.Sound(f"{script_path}/img/hidden/c.ogg")
 oesong = pygame.mixer.Sound(f"{script_path}/img/hidden/oe.ogg")
+hisong = pygame.mixer.Sound(f"{script_path}/img/hidden/hi.ogg")
 
 #Chargement des textures
 
@@ -189,6 +214,8 @@ for i in range(len(fichiers)):
 
 oimg = pygame.image.load(f"{script_path}/img/hidden/o.png").convert_alpha()
 oimg = pygame.transform.smoothscale(oimg, res_pos(1218, 900))
+hiimg = pygame.image.load(f"{script_path}/img/hidden/hi.png").convert_alpha()
+hiimg = pygame.transform.smoothscale(hiimg, res_pos(1218, 900))
 
 warn = pygame.image.load(f"{script_path}/img/ui/warn.png").convert_alpha() #Fonction pour importer l'image
 warn = pygame.transform.smoothscale(warn, res_pos(220,200)) #N'utiliser pas smooth scale sur un pixel art car ca le rendrait flou
@@ -334,6 +361,7 @@ while launched: # Pour fermer la fenêtre
             load_menu = 1
         
         window_surface.blit(beurre2, res_pos(0,0))
+        window_surface.blit(text_150a.render("Choisissez votre niveau", True, black), res_pos(63,3))
         window_surface.blit(text_150a.render("Choisissez votre niveau", True, white), res_pos(60,0))
 
         k = i = level_select_offset*5
