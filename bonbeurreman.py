@@ -9,7 +9,7 @@ except:
     system("python -m pip install --upgrade pip")
     print("Installation de pygame...")
     system("pip install pygame")
-    input("Pip à été mis à jour et pygame a été installé.\nSi le programme ne se lance toujours pas, faite manuellement les installations\nPour installer voici la marche à suivre:\nPremièrement faites 'windows+r', tapez 'cmd' et appuyer sur entré.\n Nous allons d'abbord vérifier que pip est à jour, entrez la commande si dessous dans l'invite de commande que vous avez ouvert:\npython -m pip install --upgrade pip\nAttendez la fin de l'instalation et entrez ensuite cette commande pour installer pygame:\npip install pygame\n Une fois l'installation terminé vous devriez pouvoir lancer correctement ce programme\n Appuyez sur entrée pour continuer.")
+    input("pip à été mis à jour et pygame a été installé.\nSi le programme ne se lance toujours pas, faite manuellement les installations\nPour installer voici la marche à suivre:\nPremièrement faites 'windows+r', tapez 'cmd' et appuyer sur entré.\n Nous allons d'abbord vérifier que pip est à jour, entrez la commande si dessous dans l'invite de commande que vous avez ouvert:\npython -m pip install --upgrade pip\nAttendez la fin de l'instalation et entrez ensuite cette commande pour installer pygame:\npip install pygame\n Une fois l'installation terminé vous devriez pouvoir lancer correctement ce programme\n Appuyez sur entrée pour continuer.\n\n")
     import pygame
 try:
     from PIL import Image
@@ -20,7 +20,7 @@ except:
     system("python -m pip install --upgrade pip")
     print("Installation de PIL...")
     system("pip install pillow")
-    input("Pip à été mis à jour et pil a été installé.\nSi le programme ne se lance toujours pas, faite manuellement les installations\nPour installer voici la marche à suivre:\nPremièrement faites 'windows+r', tapez 'cmd' et appuyer sur entré.\n Nous allons d'abbord vérifier que pip est à jour, entrez la commande si dessous dans l'invite de commande que vous avez ouvert:\npython -m pip install --upgrade pip\nAttendez la fin de l'instalation et entrez ensuite cette commande pour installer pygame:\npip install pillow\n Une fois l'installation terminé vous devriez pouvoir lancer correctement ce programme\n Appuyez sur entrée pour continuer.")
+    input("pip à été mis à jour et pil a été installé.\nSi le programme ne se lance toujours pas, faite manuellement les installations\nPour installer voici la marche à suivre:\nPremièrement faites 'windows+r', tapez 'cmd' et appuyer sur entré.\n Nous allons d'abbord vérifier que pip est à jour, entrez la commande si dessous dans l'invite de commande que vous avez ouvert:\npython -m pip install --upgrade pip\nAttendez la fin de l'instalation et entrez ensuite cette commande pour installer pygame:\npip install pillow\n Une fois l'installation terminé vous devriez pouvoir lancer correctement ce programme\n Appuyez sur entrée pour continuer.\n\n")
     from PIL import Image
 
 import includes.player as player
@@ -30,9 +30,9 @@ import includes.keyboard_input_detect as keyboard_input_detect
 import includes.map_file_load_indexer as map_indexer
 import includes.mapeditor as mapeditor
 import ctypes
-from os import listdir
+from os import listdir, remove
 from os.path import dirname, realpath
-from pickle import BINBYTES, Pickler, Unpickler
+from pickle import Pickler, Unpickler
 
 
 
@@ -44,7 +44,7 @@ script_path = script_path.replace("\\", "/")
 # Definitions des variables -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 player1 = player.Player(f"{script_path}/img/player_stuff/BlueBirdyBomber.png", f"{script_path}/BomberMan ST/set_bomb.ogg", f"{script_path}/img/hidden/tt.ogg")
 player2 = player.Player(f"{script_path}/img/player_stuff/RedBirdyBomber.png", f"{script_path}/BomberMan ST/set_bomb.ogg", f"{script_path}/img/hidden/tt.ogg")
-bbomb = bomb.Bomb(f"{script_path}/img/bomb/bomb_pixel.png", player1.x, player1.y, 15, f"{script_path}/img/bomb/explosion/explo1.png", f"{script_path}/img/bomb/explosion/explo2.png", f"{script_path}/img/bomb/explosion/explo3.png", f"{script_path}/img/bomb/explosion/explo4.png", f"{script_path}/img/bomb/explosion/explo5.png",  f"{script_path}/BomberMan ST/Explosion_SFX.ogg", f"{script_path}/img/hidden/boom.ogg")
+bbomb = bomb.Bomb(f"{script_path}/img/bomb/bomb_pixel.png", player1.x, player1.y, 2, f"{script_path}/img/bomb/explosion/explo1.png", f"{script_path}/img/bomb/explosion/explo2.png", f"{script_path}/img/bomb/explosion/explo3.png", f"{script_path}/img/bomb/explosion/explo4.png", f"{script_path}/img/bomb/explosion/explo5.png",  f"{script_path}/BomberMan ST/Explosion_SFX.ogg", f"{script_path}/img/hidden/boom.ogg")
 
 red = (255, 0, 0) # Quelque variable de couleur prédéfini
 green = (0, 255, 0)
@@ -69,7 +69,8 @@ load_menu = 0 #Variable permettant de charger a la première frame du menu actif
 
 mouse_click_left = True # Variable a utiliser si l'on veut que l'utilisateur relache le click
 
-fichiers = map_indexer.map_file_indexer(script_path, listdir, Image, Unpickler)
+fichiers = map_indexer.map_file_indexer(script_path, listdir, Image, Unpickler, remove)
+print(fichiers)
 editor = mapeditor.MapEditor(res)
 minimap_list = []
 
@@ -183,6 +184,7 @@ a.set_alpha(128)
 a.fill((0, 0, 0))      
 
 for i in range(len(fichiers)):
+    print(f"{script_path}/img/temp/mini_map/{fichiers[i]}_cache.png")
     minimapimg = pygame.image.load(f"{script_path}/img/temp/mini_map/{fichiers[i]}_cache.png").convert_alpha()
     minimapimg = pygame.transform.smoothscale(minimapimg, res_pos(265,265))
     minimap_list.append(minimapimg)
@@ -204,7 +206,7 @@ beurre = pygame.image.load(f"{script_path}/img/ui/beurre.png").convert_alpha()
 beurre = pygame.transform.smoothscale(beurre, res_pos(400,267))
 
 beurre2 = pygame.transform.smoothscale(beurre, res_pos(1920, 1080))
-# TODO : Changer les chemins des images avec les bons chemins du github
+
 ground = pygame.image.load(f"{script_path}/img/map/ground.png").convert_alpha()
 block = pygame.image.load(f"{script_path}/img/map/block.png").convert_alpha()
 break_block = pygame.image.load(f"{script_path}/img/map/break_block.png").convert_alpha()
@@ -467,7 +469,7 @@ while launched: # Pour fermer la fenêtre
         md.displayer(window_surface)
         
         bomb_data, explosion_data, collisition_modification = bbomb.poseBomb(window_surface, bomb_data, explosion_data, frame_compensation, collisition_modification, pause, oenable)
-        explosion_data, collisition_modification = bbomb.explosion(window_surface, explosion_data, frame_compensation, collisions, collisition_modification, pause)
+        explosion_data, collisition_modification, bomb_data = bbomb.explosion(window_surface, explosion_data, collisions, collisition_modification, pause, bomb_data)
         player1.player_display(window_surface, frame_compensation, end_game[0])
         player2.player_display(window_surface, frame_compensation, end_game[1])
         

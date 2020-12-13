@@ -20,6 +20,7 @@ class Player():
         self.frame_compensation = 0
         self.cd = 0
         self.lag = 0
+        self.lag_temp = 8
         self.player_id = 0
 
         self.set_bomb_sound = pygame.mixer.Sound(set_bomb)
@@ -69,22 +70,22 @@ class Player():
         #Bouge vers le haut
         if dico_kb__inputs_bool["z"] and self.lag <= 0 and collisions[(int((self.maplimit[0]+1)*(((self.y-self.unite)-self.centeringmap[1])/self.unite)+((self.x-self.centeringmap[0])/self.unite)))] == 0:
             self.y -= self.unite
-            self.lag = 5
+            self.lag = self.lag_temp
         
         #Bouge vers le bas
         if dico_kb__inputs_bool["s"] and self.lag <= 0 and collisions[(int((self.maplimit[0]+1)*(((self.y+self.unite)-self.centeringmap[1])/self.unite)+((self.x-self.centeringmap[0])/self.unite)))] == 0:
             self.y += self.unite
-            self.lag = 5
+            self.lag = self.lag_temp
         
         #Bouge vers la gauche
         if dico_kb__inputs_bool["q"] and self.lag <= 0 and collisions[(int((self.maplimit[0]+1)*((self.y-self.centeringmap[1])/self.unite)+(((self.x-self.unite)-self.centeringmap[0])/self.unite)))] == 0:
             self.x -= self.unite
-            self.lag = 5
+            self.lag = self.lag_temp
         
         #Bouge vers la droite
         if dico_kb__inputs_bool["d"] and self.lag <= 0 and collisions[(int((self.maplimit[0]+1)*((self.y-self.centeringmap[1])/self.unite)+(((self.x+self.unite)-self.centeringmap[0])/self.unite)))] == 0:
             self.x += self.unite
-            self.lag = 5
+            self.lag = self.lag_temp
         
     def movementp2(self, dico_kb__inputs_bool, collisions, frame_compensation):
         self.lag -= 1*frame_compensation
@@ -92,22 +93,22 @@ class Player():
         #Bouge vers le haut
         if dico_kb__inputs_bool["UP"] and self.lag <= 0 and collisions[(int((self.maplimit[0]+1)*(((self.y-self.unite)-self.centeringmap[1])/self.unite)+((self.x-self.centeringmap[0])/self.unite)))] == 0:
             self.y -= self.unite
-            self.lag = 5
+            self.lag = self.lag_temp
         
         #Bouge vers le bas
         if dico_kb__inputs_bool["DOWN"] and self.lag <= 0 and collisions[(int((self.maplimit[0]+1)*(((self.y+self.unite)-self.centeringmap[1])/self.unite)+((self.x-self.centeringmap[0])/self.unite)))] == 0:
             self.y += self.unite
-            self.lag = 5
+            self.lag = self.lag_temp
         
         #Bouge vers la gauche
         if dico_kb__inputs_bool["LEFT"] and self.lag <= 0 and collisions[(int((self.maplimit[0]+1)*((self.y-self.centeringmap[1])/self.unite)+(((self.x-self.unite)-self.centeringmap[0])/self.unite)))] == 0:
             self.x -= self.unite
-            self.lag = 5
+            self.lag = self.lag_temp
         
         #Bouge vers la droite
         if dico_kb__inputs_bool["RIGHT"] and self.lag <= 0 and collisions[(int((self.maplimit[0]+1)*((self.y-self.centeringmap[1])/self.unite)+(((self.x+self.unite)-self.centeringmap[0])/self.unite)))] == 0:
             self.x += self.unite
-            self.lag = 5
+            self.lag = self.lag_temp
 
     def kill(self, collisions, endgame):
         if collisions[(int((self.maplimit[0]+1)*((self.y-self.centeringmap[1])/self.unite)+((self.x-self.centeringmap[0])/self.unite)))] == 4:
