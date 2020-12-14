@@ -1,7 +1,9 @@
 import pickle
 
+import pygame
+
 class Mapdislayer:
-    def __init__(self, res):
+    def __init__(self, res, script_path, pygame):
         self.mapcontent = []
         self.maplimit = [0, 0]
         self.playersspawns = [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]
@@ -12,11 +14,17 @@ class Mapdislayer:
         self.texture = []
         self.bg_map = 0
         self.collisionsmap = [] #0 pas de collisions, 1 collisions, 2 block cassable, 3 bomb, 4 explosion, 5 power up
+        self.powerup_data = []
+        self.powerup_texture = []
+        self.break_block = pygame.image.load(f"{script_path}/img/map/break_block.png").convert_alpha()
+        self.speedup = pygame.image.load(f"{script_path}/img/power_up/SpeedPlus.png").convert_alpha()
+        self.boomup = pygame.image.load(f"{script_path}/img/power_up/BoomPlus.png").convert_alpha()
+        self.bombup = pygame.image.load(f"{script_path}/img/power_up/BombPlus.png").convert_alpha()
 
     def res_pos(self, spacex = 0, spacey = 0): # Permet de positionner un élement au meme endroit peu importe la résolution d'affichage
         return round(spacex * self.res[0]/1920) , round(spacey * self.res[1]/1080)
 
-    def load(self, file_name, res, pygame, Image, script_path, Unpickler, ground, block, break_block, wall):
+    def load(self, file_name, res, pygame, Image, script_path, Unpickler, randint):
         #Verifie que le fichier est utilisable
         try: #Détecte si le fichier a été suprimé, ou si le fichier ne fini pas par l'extension .data
             with open(f"{script_path}/levels/{file_name}.data", "rb") as lvl:
@@ -46,7 +54,7 @@ class Mapdislayer:
             for k in range(self.maplimit[0]+1):
                 block_exist = False
                 for a in range(len(temp)):
-                    if temp[a] == [temp[a][0], k, i]:
+                    if temp[a] == [temp[a][0], k, i] and temp[a][0] <= 3:
                         self.mapcontent.append(temp[a])
                         block_exist = True
                         break
@@ -61,8 +69,12 @@ class Mapdislayer:
             self.centeringmapx = res[0]/2-(self.blockscale*(self.maplimit[0]+1))/2
             self.centeringmapy = 0
 
-        self.texture = [pygame.transform.scale(break_block, (self.blockscale,self.blockscale))
-                        ]
+        self.texture = [pygame.transform.scale(self.break_block, (self.blockscale,self.blockscale))]
+        self.powerup_texture = [pygame.transform.scale(self.speedup, (self.blockscale,self.blockscale)),
+                                pygame.transform.scale(self.boomup, (self.blockscale,self.blockscale)),
+                                pygame.transform.scale(self.bombup, (self.blockscale,self.blockscale))]
+        
+        
         self.collisionsmap = []
         for i in range(len(self.mapcontent)):
             if self.mapcontent[i][0] == 1 or self.mapcontent[i][0] == 3:
@@ -110,7 +122,11 @@ class Mapdislayer:
         images = 0
         new_im = 0
         self.mapcontent = temp
-        
+        power_up_ratio = round(len(self.mapcontent)*(15/100))
+        for i in range(power_up_ratio):
+            a = self.mapcontent[randint(0, len(self.mapcontent)-1)]
+            self.powerup_data.append([randint(0,2), a[1]])
+        print(self.powerup_data)
         return "ok"
 
     # type de block : (si le block n'est pas renseigné il sera remplacé par un ground)
@@ -121,6 +137,10 @@ class Mapdislayer:
     # 4 = power-up
     def displayer(self, window_surface):
         window_surface.blit(self.bg_map, (self.centeringmapx, self.centeringmapy))
+        
+        for i in range(len(self.powerup_data)):
+            window_surface.blit(self.powerup_texture[self.powerup_data[i][0]], self.powerup_data[i][1])
+
         if self.mapcontent != []:
             for i in range(len(self.mapcontent)):
                 window_surface.blit(self.texture[self.mapcontent[i][0]], self.mapcontent[i][1])

@@ -20,7 +20,7 @@ class Player():
         self.frame_compensation = 0
         self.cd = 0
         self.lag = 0
-        self.lag_temp = 8
+        self.lag_temp = 3
         self.player_id = 0
 
         self.set_bomb_sound = pygame.mixer.Sound(set_bomb)

@@ -11,15 +11,11 @@ try:
         get_record = Unpickler(lvl)
         got = get_record.load()
 
-    with open(f"{script_path}/level_list_return.txt", "w") as a:
-        a.write("[")
-        for i in range(len(got)-1):
-            a.write(f"{got[i]},\n")
-        a.write(f"{got[-1]}]")
+    print(f'["{got[0]},"')
+    for i in range(len(got)-2):
+        print(f"{got[i+1]},")
+    print(f"{got[-1]}]")
 
     input("Terminé")
 except:
     input("Le fichier n'existe pas.")
-
-
-

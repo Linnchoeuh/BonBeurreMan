@@ -33,6 +33,7 @@ import ctypes
 from os import listdir, remove
 from os.path import dirname, realpath
 from pickle import Unpickler
+from random import randint
 
 
 
@@ -73,7 +74,7 @@ fichiers = map_indexer.map_file_indexer(script_path, listdir, Image, Unpickler, 
 editor = mapeditor.MapEditor(res)
 minimap_list = []
 
-md = mapdisplayer.Mapdislayer(res)
+
 result = "ok"
 level_select_offset = 0
 pause = False
@@ -87,7 +88,6 @@ temp_menu = 0
 fullscreen = False
 o = 0
 oenable = False
-# hi = 0
     
 # Génération des fonctions -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -179,6 +179,7 @@ pygame.display.set_caption("BonBeurreMan") # Renommer l'intitulé de la fenêtre
 
 ctypes.windll.user32.SetProcessDPIAware()
 window_surface = pygame.display.set_mode(res)
+md = mapdisplayer.Mapdislayer(res, script_path, pygame)
 
 
 #Chargement des polices d'écritures
@@ -233,10 +234,9 @@ beurre = pygame.transform.smoothscale(beurre, res_pos(400,267))
 beurre2 = pygame.transform.smoothscale(beurre, res_pos(1920, 1080))
 
 ground = pygame.image.load(f"{script_path}/img/map/ground.png").convert_alpha()
-block = pygame.image.load(f"{script_path}/img/map/block.png").convert_alpha()
-break_block = pygame.image.load(f"{script_path}/img/map/break_block.png").convert_alpha()
-wall = pygame.image.load(f"{script_path}/img/map/wall.png").convert_alpha()
-joueur_sprite = pygame.image.load(f"{script_path}/img/player_stuff/perso.png").convert_alpha()
+# block = pygame.image.load(f"{script_path}/img/map/block.png").convert_alpha()
+# wall = pygame.image.load(f"{script_path}/img/map/wall.png").convert_alpha()
+# joueur_sprite = pygame.image.load(f"{script_path}/img/player_stuff/perso.png").convert_alpha()
 
 
 
@@ -380,7 +380,7 @@ while launched: # Pour fermer la fenêtre
                 window_surface.fill(black)
                 window_surface.blit(text_150a.render("Chargement...", True, white), res_pos(450,425))
                 pygame.display.flip()
-                result = md.load(fichiers[i], res, pygame, Image, script_path, Unpickler, ground, block, break_block, wall) #Chargement du niveau selectionné
+                result = md.load(fichiers[i], res, pygame, Image, script_path, Unpickler, randint) #Chargement du niveau selectionné
                 if result == "Invalid extension" or result == "Corrupted map":
                     menu = 10
                 else:
@@ -493,6 +493,7 @@ while launched: # Pour fermer la fenêtre
                 if temp != "none":
                     bomb_data.append(temp)
         
+
         
         md.displayer(window_surface)
         
