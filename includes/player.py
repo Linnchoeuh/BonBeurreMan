@@ -18,9 +18,10 @@ class Player():
         
         self.unite = 0
         self.frame_compensation = 0
-        self.cd = 0
+        self.cd = 0 #bomb up
+        self.bomb_up = 1
         self.lag = 0
-        self.lag_temp = 3
+        self.lag_temp = 3 #speed up
         self.player_id = 0
 
         self.set_bomb_sound = pygame.mixer.Sound(set_bomb)
@@ -55,7 +56,7 @@ class Player():
                 self.set_bomb_sound.play()
             else:
                 self.tt_song.play()
-            self.cd = 100
+            self.cd = 100/self.bomb_up
             collision_updater.append([int((self.maplimit[0]+1)*((self.y-self.centeringmap[1])/self.unite)+((self.x-self.centeringmap[0])/self.unite)), 3])
             return [self.x, self.y, 100], collision_updater
         return "none", collision_updater
