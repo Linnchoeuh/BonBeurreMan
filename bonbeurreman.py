@@ -322,8 +322,6 @@ while launched: # Pour fermer la fenêtre
                                                 print("objection!")
                                                 if oenable == False:
                                                     osong.play()
-                                                    csong.set_volume(0.5)
-                                                    csong.play(-1)
                                                     oenable = True
                                                 else:
                                                     oesong.play()
@@ -344,6 +342,9 @@ while launched: # Pour fermer la fenêtre
                                                 window_surface.blit(oimg, res_pos(400,90))
                                             else:
                                                 o = 0
+                                                if oenable == True:
+                                                    csong.set_volume(0.5)
+                                                    csong.play(-1)
 
     
         fade_var, menu, temp_menu = fade_in(fade_var, menu, temp_menu, 0)
