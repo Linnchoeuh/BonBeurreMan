@@ -534,7 +534,7 @@ while launched: # Pour fermer la fenêtre
             window_surface.blit(text_150a.render("Fin de partie", True, white), res_pos(510,0))
             for i in range(player_numb):
                 if end_game[i] == True:
-                    window_surface.blit(text_150a.render(f"Joueur {i+1} a gagné", True, white), res_pos(340,200))
+                    window_surface.blit(text_150a.render(f"Joueur {i+1} à gagné", True, white), res_pos(340,200))
             if collision_rect(625, 500, 675, 105, "Rejouer sur cette carte")[1] == True:
                 load_menu = 2
                 pause = False

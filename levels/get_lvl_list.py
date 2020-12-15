@@ -11,7 +11,7 @@ try:
         get_record = Unpickler(lvl)
         got = get_record.load()
 
-    print(f'["{got[0]},"')
+    print(f'["{got[0]}",')
     for i in range(len(got)-2):
         print(f"{got[i+1]},")
     print(f"{got[-1]}]")
