@@ -43,8 +43,8 @@ print("Démarage de BonBeurreMan...")
 script_path = dirname(realpath(__file__))
 script_path = script_path.replace("\\", "/")
 # Definitions des variables -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-player1 = player.Player(script_path, f"{script_path}/img/player_stuff/BlueBirdyBomber.png", f"{script_path}/BomberMan ST/set_bomb.ogg", f"{script_path}/img/hidden/tt.ogg", f"{script_path}\BomberMan ST\PowerUpSound.ogg")
-player2 = player.Player(script_path, f"{script_path}/img/player_stuff/RedBirdyBomber.png", f"{script_path}/BomberMan ST/set_bomb.ogg", f"{script_path}/img/hidden/tt.ogg", f"{script_path}\BomberMan ST\PowerUpSound.ogg")
+player1 = player.Player(f"{script_path}/img/player_stuff/BlueBirdyBomber.png", f"{script_path}/BomberMan ST/set_bomb.ogg", f"{script_path}/img/hidden/tt.ogg", f"{script_path}\BomberMan ST\PowerUpSound.ogg")
+player2 = player.Player(f"{script_path}/img/player_stuff/RedBirdyBomber.png", f"{script_path}/BomberMan ST/set_bomb.ogg", f"{script_path}/img/hidden/tt.ogg", f"{script_path}\BomberMan ST\PowerUpSound.ogg")
 bbomb = bomb.Bomb(f"{script_path}/img/bomb/bomb_pixel.png", player1.x, player1.y, 2, f"{script_path}/img/bomb/explosion/explo1.png", f"{script_path}/img/bomb/explosion/explo2.png", f"{script_path}/img/bomb/explosion/explo3.png", f"{script_path}/img/bomb/explosion/explo4.png", f"{script_path}/img/bomb/explosion/explo5.png",  f"{script_path}/BomberMan ST/Explosion_SFX.ogg", f"{script_path}/img/hidden/boom.ogg", f"{script_path}/img/hidden/tt.png")
 
 red = (255, 0, 0) # Quelque variable de couleur prédéfini
@@ -58,13 +58,14 @@ light_gray = (225, 225, 225)
 gray = (150,150,150)
 dark_gray = (75, 75, 75)
 black = (0, 0, 0)
+butter = (253,219,148)
 
 res = [1280, 720] # Definition de la résolution d'affichage
 # res = [640, 360]
 mx = 0 # Definition de la position x de la souris
 my = 0 # Definition de la position y de la souris
 mousepress = [0,0,0] # Permet d'acceder au input de la souris, sachant que mousepress[0] = click gauche, mousepress[1] = click molette, mousepress[2] = click droit
-devmode = True
+devmode = False
 menu = 0 #Menu d'entrée
 load_menu = 0 #Variable permettant de charger a la première frame du menu actif
 
@@ -186,8 +187,9 @@ md = mapdisplayer.Mapdislayer(res, script_path, pygame)
 fps_text = pygame.font.Font(f"{script_path}/fonts/VCR_OSD_MONO_1.ttf", round(res_adaptation(33))) # Autres
 text_40a = pygame.font.Font(f"{script_path}/fonts/arialbd.ttf", round(res_adaptation(60)))
 text_150a = pygame.font.Font(f"{script_path}/fonts/arialbd.ttf", round(res_adaptation(150)))
+butter_font = pygame.font.Font(f"{script_path}/fonts/creamy butter.ttf", round(res_adaptation(120)))
 
-window_surface.blit(text_150a.render("Chargement...", True, white), res_pos(450,425))
+window_surface.blit(text_150a.render("Chargement...", True, butter), res_pos(450,425))
 pygame.display.flip()
 
 #Chargement sons
@@ -230,10 +232,15 @@ right_arrow = pygame.transform.smoothscale(right_arrow, res_pos(95,180))
 
 beurre = pygame.image.load(f"{script_path}/img/ui/beurre.png").convert_alpha()
 beurre = pygame.transform.smoothscale(beurre, res_pos(400,267))
-
+logo = pygame.image.load(f"{script_path}/img/ui/logo.png").convert_alpha()
+logo = pygame.transform.smoothscale(logo, res_pos(500,300))
+bg = pygame.image.load(f"{script_path}/img/ui/horrible.png").convert_alpha()
+bg = pygame.transform.smoothscale(bg, res_pos(1920, 1080))
 beurre2 = pygame.transform.smoothscale(beurre, res_pos(1920, 1080))
-
-# ground = pygame.image.load(f"{script_path}/img/map/ground.png").convert_alpha()
+ground = pygame.image.load(f"{script_path}/img/map/ground.png").convert_alpha()
+# block = pygame.image.load(f"{script_path}/img/map/block.png").convert_alpha()
+# wall = pygame.image.load(f"{script_path}/img/map/wall.png").convert_alpha()
+# joueur_sprite = pygame.image.load(f"{script_path}/img/player_stuff/perso.png").convert_alpha()
 
 
 
@@ -262,12 +269,14 @@ while launched: # Pour fermer la fenêtre
             load_menu = 0
             o = 0
         
-        window_surface.blit(text_150a.render("BonBeurreMan", True, white), res_pos(420,0))
+        window_surface.blit(bg,(0,0))
+        window_surface.blit(butter_font.render("BonBeurreMan", True, butter), res_pos(330,0))
 
-        if collision_rect(810, 300, 300, 150, "Jouer")[1] == True and temp_menu == 0: #Passe sur le menu de selection de niveau
+        if collision_rect(810, 300, 300, 150,"Jouer")[1] == True and temp_menu == 0: #Passe sur le menu de selection de niveau
             menu = 1
             fade_var = [0, 1]
             level_select_offset = 0
+
         if collision_rect(810, 500, 300, 150, "Options")[1] == True and temp_menu == 0: #Passe sur les options
             menu = 2
             fade_var = [0, 1]
@@ -279,6 +288,7 @@ while launched: # Pour fermer la fenêtre
             launched = False
         
         window_surface.blit(beurre, res_pos(1450, 780))
+        window_surface.blit(logo,res_pos(0,800))
 
         if keyboard_input["o"] == True or o > 0: #Un easter egg à la con faites pas gaffe
             if o == 0:
@@ -359,8 +369,7 @@ while launched: # Pour fermer la fenêtre
             load_menu = 1
         
         window_surface.blit(beurre2, res_pos(0,0))
-        window_surface.blit(text_150a.render("Choisissez votre niveau", True, black), res_pos(63,3))
-        window_surface.blit(text_150a.render("Choisissez votre niveau", True, white), res_pos(60,0))
+        window_surface.blit(text_150a.render("Choisissez votre niveau", True, butter), res_pos(100,0))
 
         k = i = level_select_offset*5
         if i < 0:
@@ -378,7 +387,6 @@ while launched: # Pour fermer la fenêtre
                 window_surface.blit(text_150a.render("Chargement...", True, white), res_pos(450,425))
                 pygame.display.flip()
                 result = md.load(fichiers[i], res, pygame, Image, script_path, Unpickler, randint) #Chargement du niveau selectionné
-                map_name = fichiers[i]
                 if result == "Invalid extension" or result == "Corrupted map":
                     menu = 10
                 else:
@@ -465,6 +473,8 @@ while launched: # Pour fermer la fenêtre
             player2.player_start(md.blockscale, md.playersspawns[1], md.centeringmapx, md.centeringmapy, md.maplimit, 2)
             bbomb.bomb_init(md.blockscale, md.centeringmapx, md.centeringmapy, md.maplimit)
             end_game = []
+            player1.max_bomb, player1.power, player1.lag_temp = 1, 2, 6
+            player2.max_bomb, player2.power, player2.lag_temp= 1, 2, 6
 
             for i in range(player_numb):
                 end_game.append(True)
@@ -473,7 +483,6 @@ while launched: # Pour fermer la fenêtre
             bomb_data = []
             explosion_data = []
             release_rshift = True
-            print("oui")
             load_menu = 3
             
         collisition_modification = []
@@ -505,8 +514,8 @@ while launched: # Pour fermer la fenêtre
                 bomb_data, collisition_modification = player2.set_bomb(collisition_modification, oenable, bomb_data)
 
 
-            player1.bonus_checker(md.powerup_data, oenable)  #fonctions qui va check les bonus au sol
-            player2.bonus_checker(md.powerup_data, oenable)  #fonctions qui va check les bonus au sol
+            player1.bonus_checker(md.powerup_data)  #fonctions qui va check les bonus au sol
+            player2.bonus_checker(md.powerup_data)  #fonctions qui va check les bonus au sol
         
         md.displayer(window_surface)
         
@@ -528,22 +537,13 @@ while launched: # Pour fermer la fenêtre
             if end_game[i] == True:
                 player_left += 1
         
-        if player_left <= 1: #si le joueur meurt
+        if player_left <= 1:
             pause = True
-            window_surface.blit(a, (0,0))    
+            window_surface.blit(a, (0,0))    # (0,0) are the top-left coordinates
             window_surface.blit(text_150a.render("Fin de partie", True, white), res_pos(510,0))
             for i in range(player_numb):
                 if end_game[i] == True:
-                    window_surface.blit(text_150a.render(f"Joueur {i+1} à gagné", True, white), res_pos(340,200))
-            if collision_rect(625, 500, 675, 105, "Rejouer sur cette carte")[1] == True:
-                load_menu = 2
-                pause = False
-                fade_var = [0, 0]
-                result = md.load(map_name, res, pygame, Image, script_path, Unpickler, randint) #Chargement du niveau selectionné
-                if result == "Invalid extension" or result == "Corrupted map":
-                    menu = 10
-                else:
-                    menu = 3
+                    window_surface.blit(text_150a.render(f"Joueur {i+1} a gagné", True, white), res_pos(340,200))
             if collision_rect(530, 700, 825, 105, "Retour au choix des niveaux")[1] == True:
                 menu = 1
                 fade_var = [0, 1]
