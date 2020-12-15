@@ -3,7 +3,7 @@ import pygame
 class Player():
 
     #Création caractéristiques principales joueur
-    def __init__(self, sprite, set_bomb, tt):
+    def __init__(self, sprite, set_bomb, tt, power_up_audio):
 
         self.originalsprite = pygame.image.load(sprite)
         self.sprite = 0
@@ -30,6 +30,9 @@ class Player():
 
         self.tt_song = pygame.mixer.Sound(tt)
         self.tt_song.set_volume(0.5)
+
+        self.pwr_up_sfx = pygame.mixer.Sound(power_up_audio)
+        self.pwr_up_sfx.set_volume(0.5)
 
     def player_start(self, blockscale, playersspawns, centeringmapx, centeringmapy, maplimit, player_id):
         self.unite = blockscale
@@ -128,13 +131,17 @@ class Player():
                     if powerup_data[i][0] == 0: # speed up
                         if self.lag_temp > 3:
                             self.lag_temp -= 0.5
+                            self.pwr_up_sfx.play()
+
 
                     elif powerup_data[i][0] == 1: # power up
                         self.power += 1
+                        self.pwr_up_sfx.play()
 
                     elif powerup_data[i][0] == 2: # bomb up
                         self.max_bomb += 1
-                
+                        self.pwr_up_sfx.play()
+
                     powerup_data.pop(i) # le bonus ca dégage
         except:
             print("oh le bug")

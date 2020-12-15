@@ -43,8 +43,8 @@ print("Démarage de BonBeurreMan...")
 script_path = dirname(realpath(__file__))
 script_path = script_path.replace("\\", "/")
 # Definitions des variables -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-player1 = player.Player(f"{script_path}/img/player_stuff/BlueBirdyBomber.png", f"{script_path}/BomberMan ST/set_bomb.ogg", f"{script_path}/img/hidden/tt.ogg")
-player2 = player.Player(f"{script_path}/img/player_stuff/RedBirdyBomber.png", f"{script_path}/BomberMan ST/set_bomb.ogg", f"{script_path}/img/hidden/tt.ogg")
+player1 = player.Player(f"{script_path}/img/player_stuff/BlueBirdyBomber.png", f"{script_path}/BomberMan ST/set_bomb.ogg", f"{script_path}/img/hidden/tt.ogg", f"{script_path}\BomberMan ST\PowerUpSound.ogg")
+player2 = player.Player(f"{script_path}/img/player_stuff/RedBirdyBomber.png", f"{script_path}/BomberMan ST/set_bomb.ogg", f"{script_path}/img/hidden/tt.ogg", f"{script_path}\BomberMan ST\PowerUpSound.ogg")
 bbomb = bomb.Bomb(f"{script_path}/img/bomb/bomb_pixel.png", player1.x, player1.y, 2, f"{script_path}/img/bomb/explosion/explo1.png", f"{script_path}/img/bomb/explosion/explo2.png", f"{script_path}/img/bomb/explosion/explo3.png", f"{script_path}/img/bomb/explosion/explo4.png", f"{script_path}/img/bomb/explosion/explo5.png",  f"{script_path}/BomberMan ST/Explosion_SFX.ogg", f"{script_path}/img/hidden/boom.ogg", f"{script_path}/img/hidden/tt.png")
 
 red = (255, 0, 0) # Quelque variable de couleur prédéfini
@@ -537,7 +537,7 @@ while launched: # Pour fermer la fenêtre
             window_surface.blit(text_150a.render("Fin de partie", True, white), res_pos(510,0))
             for i in range(player_numb):
                 if end_game[i] == True:
-                    window_surface.blit(text_150a.render(f"Joueur {i+1} à gagné", True, white), res_pos(340,200))
+                    window_surface.blit(text_150a.render(f"Joueur {i+1} a gagné", True, white), res_pos(340,200))
             if collision_rect(530, 700, 825, 105, "Retour au choix des niveaux")[1] == True:
                 menu = 1
                 fade_var = [0, 1]
