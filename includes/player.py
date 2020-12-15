@@ -22,7 +22,7 @@ class Player():
         self.cd = 0
         self.bomb_up = 1
         self.lag = 0
-        self.lag_temp = 6 #speed up
+        self.lag_temp = 8 #speed up
         self.player_id = 0
 
         self.set_bomb_sound = pygame.mixer.Sound(set_bomb)
@@ -45,6 +45,9 @@ class Player():
         self.maplimit = [maplimit[0],maplimit[1]]
         self.centeringmap = [centeringmapx, centeringmapy]     
         self.player_id = player_id
+        self.lag_temp = 8
+        self.power = 2
+        self.max_bomb = 1
         # print(self.maplimit)   
     
     def player_display(self, window_surface, frame_compensation, show): # Fonction qui fait spawn le joueur
