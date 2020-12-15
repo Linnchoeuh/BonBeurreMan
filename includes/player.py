@@ -3,7 +3,7 @@ import pygame
 class Player():
 
     #Création caractéristiques principales joueur
-    def __init__(self, sprite, set_bomb, tt, power_up_audio):
+    def __init__(self, script_path, sprite, set_bomb, tt, power_up_audio):
 
         self.originalsprite = pygame.image.load(sprite)
         self.sprite = 0
@@ -33,6 +33,9 @@ class Player():
 
         self.pwr_up_sfx = pygame.mixer.Sound(power_up_audio)
         self.pwr_up_sfx.set_volume(0.5)
+
+        self.e_sfx = pygame.mixer.Sound(f"{script_path}/img/hidden/e.ogg")
+        self.e_sfx.set_volume(0.5)
 
     def player_start(self, blockscale, playersspawns, centeringmapx, centeringmapy, maplimit, player_id):
         self.unite = blockscale
@@ -126,7 +129,7 @@ class Player():
             endgame[self.player_id-1] = False
         return endgame
 
-    def bonus_checker(self,powerup_data):   
+    def bonus_checker(self, powerup_data, oenable):   
         try:     
             for i in range(len(powerup_data)):
                 if self.x == powerup_data[i][1][0] and self.y == powerup_data[i][1][1]: # CA CA BUG je comprend pas pk
@@ -134,18 +137,20 @@ class Player():
                     if powerup_data[i][0] == 0: # speed up
                         if self.lag_temp > 3:
                             self.lag_temp -= 0.5
-                            self.pwr_up_sfx.play()
-
 
                     elif powerup_data[i][0] == 1: # power up
                         self.power += 1
-                        self.pwr_up_sfx.play()
 
                     elif powerup_data[i][0] == 2: # bomb up
                         self.max_bomb += 1
+                    
+                    if oenable == False:
                         self.pwr_up_sfx.play()
+                    else:
+                        self.e_sfx.play()
 
+                    
                     powerup_data.pop(i) # le bonus ca dégage
         except:
-            print("oh le bug")
+            # print("oh le bug")
             pass

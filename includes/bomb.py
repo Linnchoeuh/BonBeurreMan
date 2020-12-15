@@ -41,7 +41,6 @@ class Bomb(): # Création de la casse de la bombe
                     else:
                         explosion_index.append([bomb_index[i][0], bomb_index[i][1], 4, [self.power,0]])
                         collisions_update.append([(int((self.maplimit[0]+1)*((bomb_index[i][1]-self.centeringmap[1])/self.blockscale)+((bomb_index[i][0]-self.centeringmap[0])/self.blockscale))), 0])
-                        print(bomb_index)
                         if oenable == False: #dans cette pour placer le random prout (n'oublie pas d'import le sfx dans __init__!)
                             self.explo_sound.play()
                         else:

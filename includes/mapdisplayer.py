@@ -128,8 +128,6 @@ class Mapdislayer:
             a = self.mapcontent[randint(0, len(self.mapcontent)-1)]
             self.powerup_data.append([randint(0,2), a[1]])
 
-        print(self.powerup_data)
-        print(self.mapcontent)
         return "ok"
 
     # type de block : (si le block n'est pas renseigné il sera remplacé par un ground)
@@ -141,29 +139,25 @@ class Mapdislayer:
     def displayer(self, window_surface):
         window_surface.blit(self.bg_map, (self.centeringmapx, self.centeringmapy))
         
-        for i in range(len(self.powerup_data)):
+        for i in range(len(self.powerup_data)): #Affichage des power up
             window_surface.blit(self.powerup_texture[self.powerup_data[i][0]], self.powerup_data[i][1])
 
-        if self.mapcontent != []:
+        if self.mapcontent != []: #Affichage des block cassable de la map
             for i in range(len(self.mapcontent)):
                 window_surface.blit(self.texture[self.mapcontent[i][0]], self.mapcontent[i][1])
     
     def collisions_updater(self, modification):
         if modification != []:
-            # print(modification)
             for i in range(len(modification)):
                 self.collisionsmap[modification[i][0]] = modification[i][1]
                 final_mapcontent = []
                 if modification[i][1] == 0:
-                    print(modification)
                     for a in range(len(self.mapcontent)):
                         # print(f"Compare {(int((modification[i][0]%(self.maplimit[0]+1))*self.blockscale+self.centeringmapx), (modification[i][0]//(self.maplimit[0]+1))*self.blockscale+self.centeringmapy)} | {self.mapcontent[a][1]}")
                         if ((modification[i][0]%(self.maplimit[0]+1))*self.blockscale+self.centeringmapx, (modification[i][0]//(self.maplimit[0]+1))*self.blockscale+self.centeringmapy) == self.mapcontent[a][1] and modification[i][1] == 0:
-                            print(f"remove {self.mapcontent[a]}")
+                            pass
                         else:
                             final_mapcontent.append(self.mapcontent[a])
-                            # print(f"keep {self.mapcontent[a]}")
                     
                     self.mapcontent = final_mapcontent  
-            # print(f"Final mapcontent : {final_mapcontent}")
         return self.collisionsmap
