@@ -498,12 +498,12 @@ while launched: # Pour fermer la fenêtre
                     m += 1
 
             if keyboard_input["SPACE"] == True and release_space == True:
-                print(player1.bomb_list)
+                # print(player1.bomb_list)
                 bbomb.power = player1.power
                 bomb_data, collisition_modification = player1.set_bomb(collisition_modification, oenable, bomb_data)
 
             if keyboard_input["RSHIFT"] == True and release_space == True:
-                print(player2.bomb_list)
+                # print(player2.bomb_list)
                 bbomb.power = player2.power
                 bomb_data, collisition_modification = player2.set_bomb(collisition_modification, oenable, bomb_data)
 

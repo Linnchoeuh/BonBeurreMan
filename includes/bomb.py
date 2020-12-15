@@ -31,7 +31,7 @@ class Bomb(): # Création de la casse de la bombe
 
     def poseBomb(self, surface, bomb_index, explosion_index, frame_compensation, collisions_update, pause, oenable):
         bomb_index_temp = []
-        if pause == False:    
+        if pause == False:
             if bomb_index != []:
                 for i in range(len(bomb_index)):   
                     surface.blit(self.sprite, [bomb_index[i][0], bomb_index[i][1]])
@@ -41,6 +41,7 @@ class Bomb(): # Création de la casse de la bombe
                     else:
                         explosion_index.append([bomb_index[i][0], bomb_index[i][1], 4, [self.power,0]])
                         collisions_update.append([(int((self.maplimit[0]+1)*((bomb_index[i][1]-self.centeringmap[1])/self.blockscale)+((bomb_index[i][0]-self.centeringmap[0])/self.blockscale))), 0])
+                        print(bomb_index)
                         if oenable == False: #dans cette pour placer le random prout (n'oublie pas d'import le sfx dans __init__!)
                             self.explo_sound.play()
                         else:

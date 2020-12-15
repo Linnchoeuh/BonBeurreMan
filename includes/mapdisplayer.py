@@ -88,7 +88,7 @@ class Mapdislayer:
         temp = []
         for i in range(len(self.mapcontent)):
             if self.mapcontent[i][0] == 2:
-                temp.append([0, (int(self.centeringmapx+self.blockscale*self.mapcontent[i][1]), int(self.centeringmapy+self.blockscale*self.mapcontent[i][2]))])
+                temp.append([0, (self.centeringmapx+self.blockscale*self.mapcontent[i][1], self.centeringmapy+self.blockscale*self.mapcontent[i][2])])
             # elif self.mapcontent[i][0] == 4:
             #     self.mapcontent.append([1, (self.centeringmapx+self.blockscale*self.mapcontent[i][1], self.centeringmapy+self.blockscale*self.mapcontent[i][2])])
         images = [Image.open(x) for x in [f"{script_path}/img/map/ground.png", f"{script_path}/img/map/block.png", f"{script_path}/img/map/wall.png"]]
@@ -127,6 +127,9 @@ class Mapdislayer:
         for i in range(power_up_ratio):
             a = self.mapcontent[randint(0, len(self.mapcontent)-1)]
             self.powerup_data.append([randint(0,2), a[1]])
+
+        print(self.powerup_data)
+        print(self.mapcontent)
         return "ok"
 
     # type de block : (si le block n'est pas renseigné il sera remplacé par un ground)
@@ -147,13 +150,20 @@ class Mapdislayer:
     
     def collisions_updater(self, modification):
         if modification != []:
+            # print(modification)
             for i in range(len(modification)):
                 self.collisionsmap[modification[i][0]] = modification[i][1]
+                final_mapcontent = []
                 if modification[i][1] == 0:
+                    print(modification)
                     for a in range(len(self.mapcontent)):
-                        # print(f"Compare {((modification[i][0]%(self.maplimit[0]+1))*self.blockscale+self.centeringmapx, (modification[i][0]//(self.maplimit[0]+1))*self.blockscale+self.centeringmapy)} | {self.mapcontent[a][1]}")
-                        if ((modification[i][0]%(self.maplimit[0]+1))*self.blockscale+self.centeringmapx, (modification[i][0]//(self.maplimit[0]+1))*self.blockscale+self.centeringmapy) == self.mapcontent[a][1]:
-                            del self.mapcontent[a]
-                            break
-                        
+                        # print(f"Compare {(int((modification[i][0]%(self.maplimit[0]+1))*self.blockscale+self.centeringmapx), (modification[i][0]//(self.maplimit[0]+1))*self.blockscale+self.centeringmapy)} | {self.mapcontent[a][1]}")
+                        if ((modification[i][0]%(self.maplimit[0]+1))*self.blockscale+self.centeringmapx, (modification[i][0]//(self.maplimit[0]+1))*self.blockscale+self.centeringmapy) == self.mapcontent[a][1] and modification[i][1] == 0:
+                            print(f"remove {self.mapcontent[a]}")
+                        else:
+                            final_mapcontent.append(self.mapcontent[a])
+                            # print(f"keep {self.mapcontent[a]}")
+                    
+                    self.mapcontent = final_mapcontent  
+            # print(f"Final mapcontent : {final_mapcontent}")
         return self.collisionsmap
