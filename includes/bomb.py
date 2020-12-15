@@ -15,6 +15,7 @@ class Bomb(): # Création de la casse de la bombe
         self.maplimit = [0,0]
         self.centeringmap = [0, 0] 
         self.explo_sound = pygame.mixer.Sound(explo_sound)
+        self.explo_sound.set_volume(0.35)
         self.boom = pygame.mixer.Sound(boom)
 
     def bomb_init(self, blockscale, centeringmapx, centeringmapy, maplimit):

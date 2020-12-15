@@ -32,7 +32,7 @@ class Player():
         self.tt_song.set_volume(0.5)
 
         self.pwr_up_sfx = pygame.mixer.Sound(power_up_audio)
-        self.pwr_up_sfx.set_volume(0.5)
+        self.pwr_up_sfx.set_volume(0.35)
 
         self.e_sfx = pygame.mixer.Sound(f"{script_path}/img/hidden/e.ogg")
         self.e_sfx.set_volume(0.5)
