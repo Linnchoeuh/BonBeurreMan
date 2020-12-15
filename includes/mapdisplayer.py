@@ -122,6 +122,7 @@ class Mapdislayer:
         images = 0
         new_im = 0
         self.mapcontent = temp
+        self.powerup_data = []
         power_up_ratio = round(len(self.mapcontent)*(15/100)) #ratio de power up par rapport au nombre de briques
         for i in range(power_up_ratio):
             a = self.mapcontent[randint(0, len(self.mapcontent)-1)]
