@@ -32,7 +32,7 @@ class Player():
         self.tt_song.set_volume(0.5)
 
         self.pwr_up_sfx = pygame.mixer.Sound(power_up_audio)
-        self.pwr_up_sfx.set_volume(0.5)
+        self.pwr_up_sfx.set_volume(0.35)
 
     def player_start(self, blockscale, playersspawns, centeringmapx, centeringmapy, maplimit, player_id):
         self.unite = blockscale
