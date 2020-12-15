@@ -26,7 +26,7 @@ class Player():
         self.player_id = 0
 
         self.set_bomb_sound = pygame.mixer.Sound(set_bomb)
-        self.set_bomb_sound.set_volume(0.75)
+        self.set_bomb_sound.set_volume(0.5)
 
         self.tt_song = pygame.mixer.Sound(tt)
         self.tt_song.set_volume(0.5)
