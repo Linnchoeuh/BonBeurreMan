@@ -1,7 +1,3 @@
-import pickle
-
-import pygame
-
 class Mapdislayer:
     def __init__(self, res, script_path, pygame):
         self.mapcontent = []
@@ -126,6 +122,16 @@ class Mapdislayer:
         power_up_ratio = round(len(self.mapcontent)*(15/100)) #ratio de power up par rapport au nombre de briques
         for i in range(power_up_ratio):
             a = self.mapcontent[randint(0, len(self.mapcontent)-1)]
+            if self.powerup_data != []:
+                ok = True
+                while ok:
+                    not_ok = False
+                    a = self.mapcontent[randint(0, len(self.mapcontent)-1)]
+                    for k in range(len(self.powerup_data)-1):    
+                        if self.powerup_data[k][1] == a[1]:
+                            not_ok = True
+                    if not_ok == False:
+                        ok = False
             self.powerup_data.append([randint(0,2), a[1]])
 
         return "ok"

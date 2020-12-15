@@ -1,10 +1,8 @@
-import pygame
-
 class Player():
 
     #Création caractéristiques principales joueur
-    def __init__(self, script_path, sprite, set_bomb, tt, power_up_audio):
-
+    def __init__(self, script_path, pygame, sprite):
+        # pygame.mixer.init()
         self.originalsprite = pygame.image.load(sprite)
         self.sprite = 0
         self.power = 2 # power up
@@ -13,7 +11,6 @@ class Player():
 
         self.x = 0
         self.y = 0
-        self.coords = [self.x, self.y]
         self.maplimit = [0,0]
         self.centeringmap = [0,0]
         
@@ -25,19 +22,19 @@ class Player():
         self.lag_temp = 8 #speed up
         self.player_id = 0
 
-        self.set_bomb_sound = pygame.mixer.Sound(set_bomb)
+        self.set_bomb_sound = pygame.mixer.Sound(f"{script_path}/BomberMan ST/set_bomb.ogg")
         self.set_bomb_sound.set_volume(0.5)
 
-        self.tt_song = pygame.mixer.Sound(tt)
+        self.tt_song = pygame.mixer.Sound(f"{script_path}/img/hidden/tt.ogg")
         self.tt_song.set_volume(0.5)
 
-        self.pwr_up_sfx = pygame.mixer.Sound(power_up_audio)
+        self.pwr_up_sfx = pygame.mixer.Sound(f"{script_path}\BomberMan ST\PowerUpSound.ogg")
         self.pwr_up_sfx.set_volume(0.35)
 
         self.e_sfx = pygame.mixer.Sound(f"{script_path}/img/hidden/e.ogg")
         self.e_sfx.set_volume(0.5)
 
-    def player_start(self, blockscale, playersspawns, centeringmapx, centeringmapy, maplimit, player_id):
+    def player_start(self, blockscale, playersspawns, centeringmapx, centeringmapy, maplimit, player_id, pygame):
         self.unite = blockscale
         self.x, self.y = (playersspawns[0]*blockscale)+centeringmapx, (playersspawns[1]*blockscale)+ centeringmapy
         self.sprite = pygame.transform.scale(self.originalsprite, (1000,1000))

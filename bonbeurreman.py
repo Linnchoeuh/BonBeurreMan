@@ -43,9 +43,6 @@ print("Démarage de BonBeurreMan...")
 script_path = dirname(realpath(__file__))
 script_path = script_path.replace("\\", "/")
 # Definitions des variables -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-player1 = player.Player(f"{script_path}/img/player_stuff/BlueBirdyBomber.png", f"{script_path}/BomberMan ST/set_bomb.ogg", f"{script_path}/img/hidden/tt.ogg", f"{script_path}\BomberMan ST\PowerUpSound.ogg")
-player2 = player.Player(f"{script_path}/img/player_stuff/RedBirdyBomber.png", f"{script_path}/BomberMan ST/set_bomb.ogg", f"{script_path}/img/hidden/tt.ogg", f"{script_path}\BomberMan ST\PowerUpSound.ogg")
-bbomb = bomb.Bomb(f"{script_path}/img/bomb/bomb_pixel.png", player1.x, player1.y, 2, f"{script_path}/img/bomb/explosion/explo1.png", f"{script_path}/img/bomb/explosion/explo2.png", f"{script_path}/img/bomb/explosion/explo3.png", f"{script_path}/img/bomb/explosion/explo4.png", f"{script_path}/img/bomb/explosion/explo5.png",  f"{script_path}/BomberMan ST/Explosion_SFX.ogg", f"{script_path}/img/hidden/boom.ogg", f"{script_path}/img/hidden/tt.png")
 
 red = (255, 0, 0) # Quelque variable de couleur prédéfini
 green = (0, 255, 0)
@@ -181,6 +178,10 @@ pygame.display.set_caption("BonBeurreMan") # Renommer l'intitulé de la fenêtre
 ctypes.windll.user32.SetProcessDPIAware()
 window_surface = pygame.display.set_mode(res)
 md = mapdisplayer.Mapdislayer(res, script_path, pygame)
+bbomb = bomb.Bomb(pygame, script_path, 2)
+player1 = player.Player(script_path, pygame, f"{script_path}/img/player_stuff/BlueBirdyBomber.png")
+player2 = player.Player(script_path, pygame, f"{script_path}/img/player_stuff/RedBirdyBomber.png")
+
 
 
 #Chargement des polices d'écritures
@@ -189,7 +190,7 @@ text_40a = pygame.font.Font(f"{script_path}/fonts/arialbd.ttf", round(res_adapta
 text_150a = pygame.font.Font(f"{script_path}/fonts/arialbd.ttf", round(res_adaptation(150)))
 butter_font = pygame.font.Font(f"{script_path}/fonts/creamy butter.ttf", round(res_adaptation(120)))
 
-window_surface.blit(text_150a.render("Chargement...", True, butter), res_pos(450,425))
+window_surface.blit(text_150a.render("Chargement...", True, white), res_pos(450,425))
 pygame.display.flip()
 
 #Chargement sons
@@ -237,10 +238,6 @@ logo = pygame.transform.smoothscale(logo, res_pos(500,300))
 bg = pygame.image.load(f"{script_path}/img/ui/horrible.png").convert_alpha()
 bg = pygame.transform.smoothscale(bg, res_pos(1920, 1080))
 beurre2 = pygame.transform.smoothscale(beurre, res_pos(1920, 1080))
-ground = pygame.image.load(f"{script_path}/img/map/ground.png").convert_alpha()
-# block = pygame.image.load(f"{script_path}/img/map/block.png").convert_alpha()
-# wall = pygame.image.load(f"{script_path}/img/map/wall.png").convert_alpha()
-# joueur_sprite = pygame.image.load(f"{script_path}/img/player_stuff/perso.png").convert_alpha()
 
 
 
@@ -269,8 +266,11 @@ while launched: # Pour fermer la fenêtre
             load_menu = 0
             o = 0
         
-        window_surface.blit(bg,(0,0))
-        window_surface.blit(butter_font.render("BonBeurreMan", True, butter), res_pos(330,0))
+        if oenable == True:
+            window_surface.blit(bg,(0,0))
+            window_surface.blit(butter_font.render("BonBeurreMan", True, butter), res_pos(330,0))
+        else:
+            window_surface.blit(text_150a.render("BonBeurreMan", True, white), res_pos(330,0))
 
         if collision_rect(810, 300, 300, 150,"Jouer")[1] == True and temp_menu == 0: #Passe sur le menu de selection de niveau
             menu = 1
@@ -369,7 +369,8 @@ while launched: # Pour fermer la fenêtre
             load_menu = 1
         
         window_surface.blit(beurre2, res_pos(0,0))
-        window_surface.blit(text_150a.render("Choisissez votre niveau", True, butter), res_pos(100,0))
+        window_surface.blit(text_150a.render("Choisissez votre niveau", True, black), res_pos(103,3))
+        window_surface.blit(text_150a.render("Choisissez votre niveau", True, white), res_pos(100,0))
 
         k = i = level_select_offset*5
         if i < 0:
@@ -387,6 +388,7 @@ while launched: # Pour fermer la fenêtre
                 window_surface.blit(text_150a.render("Chargement...", True, white), res_pos(450,425))
                 pygame.display.flip()
                 result = md.load(fichiers[i], res, pygame, Image, script_path, Unpickler, randint) #Chargement du niveau selectionné
+                lvl_name = fichiers[i]
                 if result == "Invalid extension" or result == "Corrupted map":
                     menu = 10
                 else:
@@ -427,9 +429,10 @@ while launched: # Pour fermer la fenêtre
             level_slide -= 50
 
         if menu == 1:
-            if collision_rect(0, 975, 300, 105, "Retour")[1] == True:
+            if collision_rect(0, 975, 300, 105, "Retour")[1] == True or keyboard_input["ESCAPE"] == True and escape_released == True:
                 menu = 0
                 fade_var = [0, 1]
+                escape_released = False
             # if collision_rect(1320, 975, 600, 105, "Connecter manettes")[1] == True:
             #     pass
             # if collision_rect(490, 975, 675, 105, "Connexion multi local")[1] == True:
@@ -445,9 +448,10 @@ while launched: # Pour fermer la fenêtre
             mouse_click_left = False
             load_menu = 2
         
-        if collision_rect(0, 975, 300, 105, "Retour")[1] == True:
+        if collision_rect(0, 975, 300, 105, "Retour")[1] == True or keyboard_input["ESCAPE"] == True and escape_released == True:
             menu = 0
             fade_var = [0, 1]
+            escape_released = False
 
         if collision_rect(200, 200, 300, 105, "Plein écran")[1] == True:
             if fullscreen == False:
@@ -469,9 +473,9 @@ while launched: # Pour fermer la fenêtre
             mouse_click_left = False
             collisions = md.collisions_updater([])
             player_numb = 2
-            player1.player_start(md.blockscale, md.playersspawns[0], md.centeringmapx, md.centeringmapy, md.maplimit, 1)
-            player2.player_start(md.blockscale, md.playersspawns[1], md.centeringmapx, md.centeringmapy, md.maplimit, 2)
-            bbomb.bomb_init(md.blockscale, md.centeringmapx, md.centeringmapy, md.maplimit)
+            player1.player_start(md.blockscale, md.playersspawns[0], md.centeringmapx, md.centeringmapy, md.maplimit, 1, pygame)
+            player2.player_start(md.blockscale, md.playersspawns[1], md.centeringmapx, md.centeringmapy, md.maplimit, 2, pygame)
+            bbomb.bomb_init(md.blockscale, md.centeringmapx, md.centeringmapy, md.maplimit, pygame)
             end_game = []
             player1.max_bomb, player1.power, player1.lag_temp = 1, 2, 6
             player2.max_bomb, player2.power, player2.lag_temp= 1, 2, 6
@@ -514,12 +518,12 @@ while launched: # Pour fermer la fenêtre
                 bomb_data, collisition_modification = player2.set_bomb(collisition_modification, oenable, bomb_data)
 
 
-            player1.bonus_checker(md.powerup_data)  #fonctions qui va check les bonus au sol
-            player2.bonus_checker(md.powerup_data)  #fonctions qui va check les bonus au sol
+            player1.bonus_checker(md.powerup_data, oenable)  #fonctions qui va check les bonus au sol
+            player2.bonus_checker(md.powerup_data, oenable)  #fonctions qui va check les bonus au sol
         
         md.displayer(window_surface)
         
-        bomb_data, explosion_data, collisition_modification = bbomb.poseBomb(window_surface, bomb_data, explosion_data, frame_compensation, collisition_modification, pause, oenable)
+        bomb_data, explosion_data, collisition_modification = bbomb.poseBomb(window_surface, bomb_data, explosion_data, frame_compensation, collisition_modification, pause, oenable, pygame)
         explosion_data, collisition_modification, bomb_data = bbomb.explosion(window_surface, explosion_data, collisions, collisition_modification, pause, bomb_data, oenable)
         player1.player_display(window_surface, frame_compensation, end_game[0])
         player2.player_display(window_surface, frame_compensation, end_game[1])
@@ -543,10 +547,20 @@ while launched: # Pour fermer la fenêtre
             window_surface.blit(text_150a.render("Fin de partie", True, white), res_pos(510,0))
             for i in range(player_numb):
                 if end_game[i] == True:
-                    window_surface.blit(text_150a.render(f"Joueur {i+1} a gagné", True, white), res_pos(340,200))
-            if collision_rect(530, 700, 825, 105, "Retour au choix des niveaux")[1] == True:
+                    window_surface.blit(text_150a.render(f"Joueur {i+1} à gagné", True, white), res_pos(340,200))
+            
+            if collision_rect(690, 500, 600, 105, "Rejouer ce niveau")[1] == True:
+                pause = False
+                load_menu = 2
+                result = md.load(lvl_name, res, pygame, Image, script_path, Unpickler, randint) #Chargement du niveau selectionné
+                if result == "Invalid extension" or result == "Corrupted map":
+                    menu = 10
+                else:
+                    menu = 3
+            if collision_rect(530, 700, 825, 105, "Retour au choix des niveaux")[1] == True or keyboard_input["ESCAPE"] == True and escape_released == True:
                 menu = 1
                 fade_var = [0, 1]
+                escape_released = False
 
         else:
             if escape_released == True: #Activation de la pause
@@ -556,11 +570,6 @@ while launched: # Pour fermer la fenêtre
                 elif keyboard_input["ESCAPE"] == True:
                     escape_released = False
                     pause = False
-
-            if keyboard_input["ESCAPE"] == True:
-                escape_released = False
-            else:
-                escape_released = True
 
             if keyboard_input["SPACE"] == True:
                 release_space = False
@@ -651,9 +660,10 @@ while launched: # Pour fermer la fenêtre
         elif level_slide > 0:
             level_slide -= 50
 
-        if collision_rect(0, 975, 300, 105, "Retour")[1] == True:
+        if collision_rect(0, 975, 300, 105, "Retour")[1] == True or keyboard_input["ESCAPE"] == True and escape_released == True:
             menu = 0
             fade_var = [0, 1]
+            escape_released = False
         if collision_rect(1520, 975, 400, 105, "Nouveau")[1] == True:
             menu = 5
             fade_var = [0, 1]
@@ -687,6 +697,11 @@ while launched: # Pour fermer la fenêtre
         mouse_click_left = False
     else:
         mouse_click_left = True
+
+    if keyboard_input["ESCAPE"] == True:
+        escape_released = False
+    else:
+        escape_released = True
 
     #Vérifie le click gauche
 

@@ -1,24 +1,22 @@
-import pygame
-pygame.mixer.init()
-
 class Bomb(): # Création de la casse de la bombe
     
-    def __init__(self, sprite, posx, posy, power, explo1, explo2, explo3, explo4, explo5, explo_sound, boom, tt):
-        self.original_sprite = pygame.image.load(sprite)
-        self.x = posx
-        self.y = posy
+    def __init__(self, pygame, script_path, power):
+        pygame.mixer.init()
+        self.original_sprite = pygame.image.load(f"{script_path}/img/bomb/bomb_pixel.png")
+        self.x = 0
+        self.y = 0
         self.power = power
         self.timer = 190
-        self.original_explosion_list = [pygame.image.load(explo1), pygame.image.load(explo2), pygame.image.load(explo3), pygame.image.load(explo4), pygame.image.load(explo5)]
-        self.original_ttimg = pygame.image.load(tt)
+        self.original_explosion_list = [pygame.image.load(f"{script_path}/img/bomb/explosion/explo1.png"), pygame.image.load(f"{script_path}/img/bomb/explosion/explo2.png"), pygame.image.load(f"{script_path}/img/bomb/explosion/explo3.png"), pygame.image.load(f"{script_path}/img/bomb/explosion/explo4.png"), pygame.image.load(f"{script_path}/img/bomb/explosion/explo5.png")]
+        self.original_ttimg = pygame.image.load( f"{script_path}/img/hidden/tt.png")
         self.blockscale = 0
         self.maplimit = [0,0]
         self.centeringmap = [0, 0] 
-        self.explo_sound = pygame.mixer.Sound(explo_sound)
+        self.explo_sound = pygame.mixer.Sound(f"{script_path}/BomberMan ST/Explosion_SFX.ogg")
         self.explo_sound.set_volume(0.35)
-        self.boom = pygame.mixer.Sound(boom)
+        self.boom = pygame.mixer.Sound(f"{script_path}/img/hidden/boom.ogg")
 
-    def bomb_init(self, blockscale, centeringmapx, centeringmapy, maplimit):
+    def bomb_init(self, blockscale, centeringmapx, centeringmapy, maplimit, pygame):
         self.blockscale = blockscale
         self.sprite = pygame.transform.scale(self.original_sprite, (blockscale, blockscale))
         self.explosion_list = [pygame.transform.scale(self.original_explosion_list[0], (blockscale, blockscale)),
@@ -30,7 +28,7 @@ class Bomb(): # Création de la casse de la bombe
         self.maplimit = [maplimit[0],maplimit[1]]
         self.centeringmap = [centeringmapx, centeringmapy] 
 
-    def poseBomb(self, surface, bomb_index, explosion_index, frame_compensation, collisions_update, pause, oenable):
+    def poseBomb(self, surface, bomb_index, explosion_index, frame_compensation, collisions_update, pause, oenable, pygame):
         bomb_index_temp = []
         if pause == False:
             if bomb_index != []:
